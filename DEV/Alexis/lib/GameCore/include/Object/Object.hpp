@@ -16,22 +16,23 @@ class Objects;
 class Object {
     public:
         Object(std::string name, Objects *parent);
-        ~Object();
+        virtual ~Object() = default;
         std::vector<Components *> &run(std::string key);
         void setGraphical(std::vector<Components *> components);
         std::vector<Components *> &getGraphical();
         void setBehavior(Behavior *behavior);
         Behavior *getBehavior();
+        const std::string &getName();
     protected:
-    //functions
-    //data
-    private:
     //functions
     //data
         std::string name;
         Objects *parent;
         Behavior *behavior;
         std::vector<Components *> graphical;
+    private:
+    //functions
+    //data
 
 };
 

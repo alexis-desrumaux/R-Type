@@ -17,6 +17,7 @@ class Objects {
         ~Objects();
         std::vector<Components *> &getGraphicalComponents();
         std::vector<Object *> &grabObjects();
+        Object *getObjectByName(std::string);
     //data
     protected:
     private:

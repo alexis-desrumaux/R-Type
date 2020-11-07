@@ -7,6 +7,42 @@
 
 #include "../include/Core/Core.hpp"
 
+void Core::runMenu()
+{
+
+}
+
+void Core::initMenu()
+{
+    this->gameObjs->grabObjects().push_back(new Menu("Menu", this->gameObjs));
+    this->GameStateInit = true;
+}
+
+void Core::runGame()
+{
+    switch (this->state)
+    {
+    case Game::State::MENU:
+        if (this->GameStateInit == false)
+            this->initMenu();
+        else
+            this->gameObjs->getObjectByName("Menu")->run(this->keyPressed);
+        break;
+    default:
+        break;
+    }
+}
+
+int Core::launch()
+{
+    while (this->gl->isRunning == true) {
+        this->runGame();
+        this->keyPressed = this->gl->display(this->gameObjs->getGraphicalComponents());
+        if (!this->keyPressed.empty())
+            std::cout << this->keyPressed << std::endl;
+    }
+    return 0;
+}
 
 IGLib *getGLib(std::string entry_point, void *_handle)
 {
@@ -33,28 +69,13 @@ void *load(std::string _path)
     return _handle;
 }
 
-int Core::launch()
-{
-    Object *audio = new Object("audio", this->gameObjs);
-    std::vector<Components *> audioComponents;
-    audioComponents.push_back(new Component::Audio("audio", "./media/space1.ogg", Component::AudioState::PLAY, true));
-    audio->setGraphical(audioComponents);
-
-    this->gameObjs->grabObjects().push_back(audio);
-    while (this->gl->isRunning == true) {
-        this->keyPressed = this->gl->display(this->gameObjs->getGraphicalComponents());
-        if (!this->keyPressed.empty())
-            std::cout << this->keyPressed << std::endl;
-    }
-    return 0;
-}
-
 Core::Core()
 {
     this->handle_lib = load("./lib/graphical/lib_sfml.so");
     this->gl = getGLib("createLib", this->handle_lib);
     this->gl->isRunning = true;
     this->gameObjs = new Objects();
+    this->GameStateInit = false;
 }
 
 Core::~Core()

@@ -28,6 +28,7 @@ RM	= rm -f
 SRCS	=	./src/main.cpp  \
 			./src/Core.cpp \
 			./src/Components.cpp \
+			./src/GameState/Menu/Menu.cpp \
 
 OBJS	= $(SRCS:.cpp=.o)
 

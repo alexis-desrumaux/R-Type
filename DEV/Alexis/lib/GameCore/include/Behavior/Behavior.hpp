@@ -8,7 +8,8 @@
 #ifndef BEHAVIOR_HPP_
 #define BEHAVIOR_HPP_
 
-#include "../../../graphical/sfml/include/Components.hpp"
+#include <iostream>
+#include <vector>
 
 class Object;
 
@@ -17,7 +18,7 @@ class Behavior {
     //functions
         Behavior(Object *parent);
         virtual ~Behavior() = default;
-        virtual void run(std::string key);
+        virtual void run(std::string key) = 0;
         const std::string &getType();
     //data
     protected:

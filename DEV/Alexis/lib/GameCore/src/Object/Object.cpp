@@ -7,6 +7,11 @@
 
 #include "../../include/Object/Object.hpp"
 
+const std::string &Object::getName()
+{
+    return this->name;
+}
+
 Behavior *Object::getBehavior()
 {
     return this->behavior;
@@ -40,8 +45,4 @@ Object::Object(std::string name, Objects *parent)
     this->name = name;
     this->parent = parent;
     this->behavior = NULL;
-}
-
-Object::~Object()
-{
 }

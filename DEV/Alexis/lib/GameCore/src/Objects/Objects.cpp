@@ -7,6 +7,15 @@
 
 #include "../../include/Objects/Objects.hpp"
 
+Object *Objects::getObjectByName(std::string name)
+{
+    for (size_t i = 0; i != this->objects.size(); i += 1) {
+        if (this->objects.at(i)->getName() == name)
+            return (this->objects.at(i));
+    }
+    return nullptr;
+}
+
 std::vector<Object *> &Objects::grabObjects()
 {
     return this->objects;

@@ -21,6 +21,16 @@
 #include "../../lib/graphical/sfml/include/IGLib.hpp"
 #include "../../lib/graphical/sfml/include/Components.hpp"
 
+#include "./GameState/Menu/Menu.hpp"
+
+namespace Game
+{
+    enum State
+    {
+        MENU,
+    };
+}
+
 class Core {
     public:
     //functions
@@ -31,11 +41,16 @@ class Core {
     protected:
     private:
     //functions
+        void runGame();
+        void runMenu();
+        void initMenu();
     //data
         IGLib *gl;
         void *handle_lib;
         Objects *gameObjs;
         std::string keyPressed;
+        Game::State state;
+        bool GameStateInit;
 };
 
 #endif /* !CORE_HPP_ */
