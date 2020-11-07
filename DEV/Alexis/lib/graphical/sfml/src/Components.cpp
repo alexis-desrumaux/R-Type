@@ -5,7 +5,7 @@
 ** Components
 */
 
-#include "Components.hpp"
+#include "../include/Components.hpp"
 
 bool isOnChangeExist(std::vector<int> *onChange, int def)
 {

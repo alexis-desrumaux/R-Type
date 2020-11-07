@@ -27,7 +27,7 @@ RM	= rm -f
 
 SRCS	=	./src/main.cpp  \
 			./src/Core.cpp \
-			./src/Components.cpp
+			./src/Components.cpp \
 
 OBJS	= $(SRCS:.cpp=.o)
 
@@ -37,7 +37,7 @@ CPPFLAGS += -Wall -Wextra
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(OBJS) -o $(NAME) -ldl && \
+	@$(CC) $(OBJS) -o $(NAME) ./lib/GameCore/libmy_GameCore.a -ldl && \
     $(ECHO) $(GREEN) "[OK]"$(TEAL)"  BUILD : rtype" $(DEFAULT)  || \
     $(ECHO) $(RED) "[ERROR]" $(TEAL) arcade $(DEFAULT)
 clean:

@@ -19,7 +19,7 @@ class IGLib {
         IGLib() = default;
         virtual ~IGLib() = default;
         virtual std::string display(std::vector<Components *>) = 0;
-        virtual int initLib(std::vector<Components *>) = 0;
+        /*virtual int initLib(std::vector<Components *>) = 0;*/
         std::string name;
         int state;
     //settings

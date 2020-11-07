@@ -78,10 +78,13 @@ namespace SFML
             SFML();
             virtual ~SFML();
             virtual std::string display(std::vector<Components *>);
-            virtual int initLib(std::vector<Components *>);
+            /*virtual int initLib(std::vector<Components *>);*/
             virtual int getEventKey();
             virtual void setEventKey(int);
             int manageEventOnKeyboard(sf::Event event);
+            void checkForNewComponents(std::vector<Components *>&);
+            void checkForDeletedComponents(std::vector<Components *>&);
+            void checkForMovedComponents(std::vector<Components *>&);
             int manageUpdate(std::vector<Components *>);
             int draw(void);
         protected:

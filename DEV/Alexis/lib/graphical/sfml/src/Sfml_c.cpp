@@ -5,7 +5,7 @@
 ** Sfml_c
 */
 
-#include "SFML.hpp"
+#include "../include/SFML.hpp"
 
 /*--------------------------------AUDIO-----------------------------------*/
 

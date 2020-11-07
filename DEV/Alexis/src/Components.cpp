@@ -5,7 +5,7 @@
 ** Components
 */
 
-#include "../include/graphical/SFML/Components.hpp"
+#include "../lib/graphical/sfml/include/Components.hpp"
 
 bool isOnChangeExist(std::vector<int> *onChange, int def)
 {

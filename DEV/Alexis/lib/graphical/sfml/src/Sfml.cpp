@@ -5,7 +5,7 @@
 ** Sfml
 */
 
-#include "SFML.hpp"
+#include "../include/SFML.hpp"
 #include "../include/Components.hpp"
 #include <chrono>
 
@@ -232,10 +232,120 @@ int SFML::SFML::manageUpdate(std::vector<Components *> update)
     return 0;
 }
 
-std::string SFML::SFML::display(std::vector<Components *> update)
+size_t findLComponents_index(std::vector<SFML::LComponents *>&lcomponent, std::string name)
+{
+    for (size_t i = 0; !lcomponent.empty() && i != lcomponent.size(); i += 1) {
+        if (lcomponent.at(i)->componentName == name)
+            return i;
+    }
+    return -1;
+}
+
+size_t findComponents_index(std::vector<Components *> &components, std::string name)
+{
+    for (size_t i = 0; !components.empty() && i != components.size(); i += 1) {
+        if (components.at(i)->componentName == name)
+            return i;
+    }
+    return -1;
+}
+
+void resetStateComponents(std::vector<Components *> components)
+{
+    if (components.empty() != true) {
+        for (size_t i = 0; i != components.size(); i += 1) {
+            components.at(i)->resetState();
+        }
+    }
+}
+
+SFML::LComponents *createNewLComponent(Components *AComponent)
+{
+    listComponent::listComponent type = AComponent->type;
+    SFML::LComponents *newLComponent = nullptr;
+
+    switch (type)
+    {
+        case listComponent::listComponent::SPRITE:
+            newLComponent = new SFML::LComponent::Sprite(dynamic_cast<Component::Sprite *>(AComponent));
+            break;
+        case listComponent::listComponent::TEXT:
+            newLComponent = new SFML::LComponent::Text(dynamic_cast<Component::Text *>(AComponent));
+            break;
+        case listComponent::listComponent::AUDIO:
+            newLComponent = new SFML::LComponent::Audio(dynamic_cast<Component::Audio *>(AComponent));
+            break;
+        default:
+            break;
+    }
+    return newLComponent;
+}
+
+void debug_dispNameLComponents(std::vector<SFML::LComponents *> &lcomponents)
+{
+    for (size_t i = 0; i != lcomponents.size(); i += 1) {
+        std::cout << lcomponents.at(i)->componentName << std::endl;
+    }
+}
+
+void SFML::SFML::checkForMovedComponents(std::vector<Components *>& components)
+{
+    std::vector<LComponents *>newLcomponents;
+    std::vector<size_t> positions;
+    size_t indexOfLComponent = 0;
+    bool moved = false;
+
+    for (size_t i = 0; i != components.size(); i += 1) {
+        indexOfLComponent = findLComponents_index(this->lComponents, components.at(i)->componentName);
+        if (indexOfLComponent != (size_t)-1) {
+            if (i != indexOfLComponent) {
+                moved = true;
+            }
+            positions.push_back(indexOfLComponent);
+        }
+    }
+    if (moved == true) {
+        for (size_t i = 0; i != positions.size(); i += 1) {
+            newLcomponents.push_back(this->lComponents.at(positions.at(i)));
+        }
+        this->lComponents = newLcomponents;
+    }
+}
+
+void SFML::SFML::checkForDeletedComponents(std::vector<Components *>& components)
+{
+    size_t indexOfComponent = 0;
+
+    for (size_t i = 0; i != this->lComponents.size(); i += 1) {
+        indexOfComponent = findComponents_index(components, this->lComponents.at(i)->componentName);
+        if (indexOfComponent == (size_t)-1) {
+            this->lComponents.erase(this->lComponents.begin() + i);
+        }
+    }
+}
+
+void SFML::SFML::checkForNewComponents(std::vector<Components *> &components)
+{
+    size_t indexOfLComponent = 0;
+
+    for (size_t i = 0; i != components.size(); i += 1) {
+        indexOfLComponent = findLComponents_index(this->lComponents, components.at(i)->componentName);
+        if (indexOfLComponent == (size_t)-1) {
+            this->lComponents.insert(this->lComponents.begin() + i, createNewLComponent(components.at(i)));
+            debug_dispNameLComponents(this->lComponents);
+            std::cout << "---------------------------" << std::endl;
+        }
+    }
+}
+
+std::string SFML::SFML::display(std::vector<Components *> components)
 {
     sf::Event event;
     std::string keyPressed = "";
+
+    this->checkForNewComponents(components);
+    this->checkForDeletedComponents(components);
+    this->checkForMovedComponents(components);
 
     while (this->window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -244,15 +354,13 @@ std::string SFML::SFML::display(std::vector<Components *> update)
         }
         if (event.type == event.KeyPressed && event.type != event.MouseButtonPressed) {
             keyPressed = SFKeyToString(event.key.code);
-            if (keyPressed == "F4" || keyPressed == "F5") {
-                this->window->close();
-            }
         }
     }
     this->window->clear();
-    manageUpdate(update);
+    manageUpdate(components);
     draw();
     this->window->display();
+    resetStateComponents(components);
     return keyPressed;
 }
 
@@ -271,6 +379,7 @@ void deleteUnusedLComponents(std::vector<SFML::LComponents *>&lComponents, std::
     }
 }
 
+/*
 size_t initLibFindLComponentsIndex(std::vector<SFML::LComponents *>&lcomponent, std::string name)
 {
     for (size_t i = 0; !lcomponent.empty() && i != lcomponent.size(); i += 1) {
@@ -289,7 +398,9 @@ SFML::LComponents *initLibFindLComponentsExist(std::vector<SFML::LComponents *>&
     return NULL;
 }
 
-int SFML::SFML::initLib(std::vector<Components *> components)
+*/
+
+/*int SFML::SFML::initLib(std::vector<Components *> components)
 {
     std::vector<size_t> listLComponentSavedIndex;
     std::vector<LComponents *> newList;
@@ -332,7 +443,7 @@ int SFML::SFML::initLib(std::vector<Components *> components)
     deleteUnusedLComponents(this->lComponents, listLComponentSavedIndex);
     this->lComponents = newList;
     return 0;
-}
+}*/
 
 SFML::SFML::SFML()
 {

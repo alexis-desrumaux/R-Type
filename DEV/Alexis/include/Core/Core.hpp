@@ -17,8 +17,9 @@
 #include <dlfcn.h>
 #include <string.h>
 
-#include "../graphical/SFML/IGLib.hpp"
-#include "../graphical/SFML/Components.hpp"
+#include "../../lib/GameCore/include/Objects/Objects.hpp"
+#include "../../lib/graphical/sfml/include/IGLib.hpp"
+#include "../../lib/graphical/sfml/include/Components.hpp"
 
 class Core {
     public:
@@ -33,8 +34,7 @@ class Core {
     //data
         IGLib *gl;
         void *handle_lib;
-        std::vector<Components *> components;
-        std::vector<Components *> update;
+        Objects *gameObjs;
         std::string keyPressed;
 };
 

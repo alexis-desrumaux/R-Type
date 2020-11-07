@@ -34,6 +34,7 @@ $(NAME): $(OBJS)
 	$(ECHO) $(GREEN) "[OK]"$(TEAL)"  BUILD : lib_arcade_sfml.so" $(DEFAULT)  || \
     $(ECHO) $(RED) "[ERROR]" $(TEAL) lib_arcade_sfml.so $(DEFAULT)
 
+
 clean:
 	@$(RM) $(OBJS) && \
         $(ECHO) $(TEAL)"  CLEAN : $(OBJS)" $(DEFAULT)
