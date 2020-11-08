@@ -16,16 +16,16 @@ class Object;
 class Behavior {
     public:
     //functions
-        Behavior(Object *parent);
+        Behavior(std::string name, Object *parent);
         virtual ~Behavior() = default;
-        virtual void run(std::string key) = 0;
-        const std::string &getType();
+        virtual void run(std::string &key) = 0;
+        const std::string &getName();
     //data
     protected:
     //functions
     //data
         Object *parent;
-        std::string type;
+        std::string name;
     private:
 };
 

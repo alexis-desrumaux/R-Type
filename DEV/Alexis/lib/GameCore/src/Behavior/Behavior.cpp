@@ -7,7 +7,13 @@
 
 #include "../../include/Behavior/Behavior.hpp"
 
-Behavior::Behavior(Object *parent)
+const std::string &Behavior::getName()
+{
+    return this->name;
+}
+
+Behavior::Behavior(std::string name, Object *parent)
 {
     this->parent = parent;
+    this->name = name;
 }

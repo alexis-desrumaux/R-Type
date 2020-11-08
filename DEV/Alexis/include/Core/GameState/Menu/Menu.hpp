@@ -10,12 +10,93 @@
 
 #include "../../../../lib/GameCore/include/Objects/Objects.hpp"
 #include "../../../../lib/GameCore/include/Object/Object.hpp"
+#include "../../../../lib/GameCore/include/Tools/Tools.hpp"
+
 #include <sys/time.h>
 
-struct myclock_t
+class StartBehavior : public Behavior
 {
-    struct timeval start;
-    struct timeval end;
+    public:
+        StartBehavior(Object *parent);
+        ~StartBehavior();
+        void run(std::string &keyPressed);
+    protected:
+    private:
+    //functions
+        void initStart();
+        void startAnimation();
+    //data
+        Component::Text *startTxt;
+        myclock_t *startTxtClock;
+        bool startTxtToogle;
+};
+
+class Start : public Object
+{
+    public:
+        Start(std::string name, Objects *parent);
+        ~Start();
+    protected:
+    private:
+};
+
+class PlanetsBehavior : public Behavior
+{
+    public:
+        PlanetsBehavior(Object *parent);
+        ~PlanetsBehavior();
+        void run(std::string &key);
+    protected:
+    private:
+    //functions
+        void initPlanets();
+        void movePlanets();
+    //data
+        std::vector<Component::Sprite *> planets;
+        myclock_t *planetsBackgroundClock;
+        bool enableFasterSpeed;
+};
+
+class Planets : public Object
+{
+    public:
+        Planets(std::string name, Objects *parent);
+        ~Planets();
+    protected:
+    private:
+};
+
+class BackgroundBehavior : public Behavior
+{
+    public:
+        BackgroundBehavior(Object *parent);
+        ~BackgroundBehavior();
+        void run(std::string &key);
+        void enableFasterSpeed();
+    protected:
+    private:
+    //functions
+        void initBackground();
+        void moveBackground();
+        void moveBackground_next();
+    //data
+        Component::Sprite *background1;
+        Component::Sprite *background2;
+        Component::Sprite *background3;
+        myclock_t *backgroundClock;
+        myclock_t *speedClock;
+        float speed;
+        bool enableFasterSpeedToogle;
+
+};
+
+class Background : public Object
+{
+    public:
+        Background(std::string name, Objects *parent);
+        ~Background();
+    protected:
+    private:
 };
 
 class MenuBehavior : public Behavior
@@ -23,25 +104,14 @@ class MenuBehavior : public Behavior
     public:
         MenuBehavior(Object *parent);
         ~MenuBehavior();
-        void run(std::string key);
+        void run(std::string &key);
     protected:
     private:
     //functions
         void initMenu();
         void initShips();
-        void moveBackground();
-        void movePlanets();
-        void startAnimation();
-        void moveBackground_next(Object *background);
     //data
         Objects *objs;
-        Component::Sprite *earthBackground;
-        Component::Sprite *marsBackground;
-        Component::Text *startTxt;
-        myclock_t *backgroundClock;
-        myclock_t *planetsBackgroundClock;
-        myclock_t *startTxtClock;
-        bool startTxtToogle;
 };
 
 class Menu : public Object {
