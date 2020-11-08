@@ -20,6 +20,7 @@ class Object {
         std::vector<Components *> &run(std::string key);
         void setGraphical(std::vector<Components *> components);
         std::vector<Components *> &getGraphical();
+        Components *findGraphicalComponentByName(std::string);
         void setBehavior(Behavior *behavior);
         Behavior *getBehavior();
         const std::string &getName();

@@ -22,6 +22,15 @@ void Object::setBehavior(Behavior *behavior)
     this->behavior = behavior;
 }
 
+Components *Object::findGraphicalComponentByName(std::string name)
+{
+    for (size_t i = 0; i != this->graphical.size(); i += 1) {
+        if (this->graphical.at(i)->componentName == name)
+            return this->graphical.at(i);
+    }
+    return NULL;
+}
+
 std::vector<Components *> &Object::getGraphical()
 {
     return this->graphical;

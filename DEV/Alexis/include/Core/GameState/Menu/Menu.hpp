@@ -10,6 +10,13 @@
 
 #include "../../../../lib/GameCore/include/Objects/Objects.hpp"
 #include "../../../../lib/GameCore/include/Object/Object.hpp"
+#include <sys/time.h>
+
+struct myclock_t
+{
+    struct timeval start;
+    struct timeval end;
+};
 
 class MenuBehavior : public Behavior
 {
@@ -21,9 +28,12 @@ class MenuBehavior : public Behavior
     private:
     //functions
         void initMenu();
+        void initShips();
+        void moveBackground();
+        void moveBackground_next(Object *background);
     //data
         Objects *objs;
-        bool mounted;
+        myclock_t *backgroundClock;
 };
 
 class Menu : public Object {
