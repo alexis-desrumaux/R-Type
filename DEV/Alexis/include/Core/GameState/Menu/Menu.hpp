@@ -30,10 +30,18 @@ class MenuBehavior : public Behavior
         void initMenu();
         void initShips();
         void moveBackground();
+        void movePlanets();
+        void startAnimation();
         void moveBackground_next(Object *background);
     //data
         Objects *objs;
+        Component::Sprite *earthBackground;
+        Component::Sprite *marsBackground;
+        Component::Text *startTxt;
         myclock_t *backgroundClock;
+        myclock_t *planetsBackgroundClock;
+        myclock_t *startTxtClock;
+        bool startTxtToogle;
 };
 
 class Menu : public Object {

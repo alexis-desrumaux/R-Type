@@ -17,6 +17,36 @@ long getElapsedTime_millisec(myclock_t *clock)
     return millisec;
 }
 
+void MenuBehavior::startAnimation()
+{
+    if (getElapsedTime_millisec(this->startTxtClock) < 1000)
+        return;
+    this->startTxtToogle = !this->startTxtToogle;
+    this->startTxt->display = this->startTxtToogle;
+    this->startTxt->setState(Component::State::UPDATE);
+    gettimeofday(&this->startTxtClock->start, NULL);
+}
+
+void MenuBehavior::movePlanets()
+{
+    std::pair<float, float> earthBackgroundSpritePos;
+    std::pair<float, float> marsBackgroundSpritePos;
+
+    if (getElapsedTime_millisec(this->planetsBackgroundClock) < 1)
+        return;
+    if (this->earthBackground == NULL || this->marsBackground == NULL)
+        return;
+    earthBackgroundSpritePos = this->earthBackground->getPosition();
+    marsBackgroundSpritePos = this->marsBackground->getPosition();
+    earthBackgroundSpritePos.first -= 2;
+    marsBackgroundSpritePos.first -= 2;
+    earthBackground->setPosition(earthBackgroundSpritePos);
+    marsBackground->setPosition(marsBackgroundSpritePos);
+    earthBackground->setState(Component::State::UPDATE);
+    marsBackground->setState(Component::State::UPDATE);
+    gettimeofday(&this->planetsBackgroundClock->start, NULL);
+}
+
 void MenuBehavior::moveBackground_next(Object *background)
 {
     Components *backgroundComponent = background->findGraphicalComponentByName("menu_background1");
@@ -55,9 +85,9 @@ void MenuBehavior::moveBackground_next(Object *background)
         backgroundSpritePos2.first = 1920;
         backgroundSpritePos3.first = 3840;
     }
-    backgroundSpritePos.first -= 5;
-    backgroundSpritePos2.first -= 5;
-    backgroundSpritePos3.first -= 5;
+    backgroundSpritePos.first -= 1;
+    backgroundSpritePos2.first -= 1;
+    backgroundSpritePos3.first -= 1;
     backgroundSprite->setPosition(backgroundSpritePos);
     backgroundSprite2->setPosition(backgroundSpritePos2);
     backgroundSprite3->setPosition(backgroundSpritePos2);
@@ -81,6 +111,8 @@ void MenuBehavior::moveBackground()
 void MenuBehavior::run(std::string key)
 {
     this->moveBackground();
+    this->movePlanets();
+    this->startAnimation();
     this->parent->setGraphical(this->objs->getGraphicalComponents());
 }
 
@@ -124,16 +156,28 @@ void MenuBehavior::initMenu()
     backgroundComponents.push_back(new Component::Sprite("menu_background1", "./media/Menu/menu_background1.jpg", std::pair<float, float>(0, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
     backgroundComponents.push_back(new Component::Sprite("menu_background2", "./media/Menu/menu_background1.jpg", std::pair<float, float>(1920, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
     backgroundComponents.push_back(new Component::Sprite("menu_background3", "./media/Menu/menu_background1.jpg", std::pair<float, float>(3840, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
+    this->earthBackground = new Component::Sprite("menu_earth", "./media/Menu/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    backgroundComponents.push_back(this->earthBackground);
+    this->marsBackground = new Component::Sprite("menu_mars", "./media/Menu/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    backgroundComponents.push_back(this->marsBackground);
     background->setGraphical(backgroundComponents);
 
     Object *title = new Object("title", this->objs);
     std::vector<Components *> titleComponents;
     titleComponents.push_back(new Component::Sprite("menu_title1", "./media/Menu/title1.png", std::pair<float, float>(700, 50), std::pair<float, float>(1.3, 1.3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
     title->setGraphical(titleComponents);
+
+    Object *start = new Object("start", this->objs);
+    std::vector<Components *> startComponents;
+    this->startTxt = new Component::Text("menu_startTxt", "START", "./media/Fonts/arcade.ttf", 60, Component::Color::White, std::pair<float, float>(800, 500), std::pair<int, int>(-1, -1));
+    startComponents.push_back(this->startTxt);
+    start->setGraphical(startComponents);
+
     this->objs->grabObjects().push_back(audio);
     this->objs->grabObjects().push_back(background);
     this->objs->grabObjects().push_back(title);
     this->initShips();
+    this->objs->grabObjects().push_back(start);
 }
 
 MenuBehavior::MenuBehavior(Object *parent) : Behavior(parent)
@@ -141,7 +185,12 @@ MenuBehavior::MenuBehavior(Object *parent) : Behavior(parent)
     this->parent->getGraphical().clear();
     this->objs = new Objects();
     this->backgroundClock = new myclock_t;
+    this->planetsBackgroundClock = new myclock_t;
+    this->startTxtClock = new myclock_t;
     gettimeofday(&this->backgroundClock->start, NULL);
+    gettimeofday(&this->planetsBackgroundClock->start, NULL);
+    gettimeofday(&this->startTxtClock->start, NULL);
+    this->startTxtToogle = false;
     this->initMenu();
 }
 
