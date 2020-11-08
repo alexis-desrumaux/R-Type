@@ -178,8 +178,8 @@ void BackgroundBehavior::moveBackground()
 {
     if (myclock::getElapsedTime_millisec(this->backgroundClock) < 1)
         return;
-    if (this->enableFasterSpeedToogle && this->speed != 10) {
-        if (myclock::getElapsedTime_millisec(this->speedClock) > 500) {
+    if (this->enableFasterSpeedToogle && this->speed != 20) {
+        if (myclock::getElapsedTime_millisec(this->speedClock) > 100) {
             this->speed += 1;
             myclock::resetClock(this->speedClock);
         }
