@@ -41,10 +41,10 @@ void Object::setGraphical(std::vector<Components *> components)
     this->graphical = components;
 }
 
-std::vector<Components *> &Object::run(std::string key)
+std::vector<Components *> &Object::run(eventType_t *event)
 {
     if (this->behavior != nullptr) {
-        this->behavior->run(key);
+        this->behavior->run(event);
     }
     return this->graphical;
 }

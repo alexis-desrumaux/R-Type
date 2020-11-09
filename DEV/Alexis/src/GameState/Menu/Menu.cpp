@@ -18,7 +18,7 @@ void StartBehavior::startAnimation()
     myclock::resetClock(this->startTxtClock);
 }
 
-void StartBehavior::run(std::string &keyPressed)
+void StartBehavior::run(eventType_t *event)
 {
     this->startAnimation();
 }
@@ -90,7 +90,7 @@ void PlanetsBehavior::movePlanets()
     myclock::resetClock(this->planetsBackgroundClock);
 }
 
-void PlanetsBehavior::run(std::string &key)
+void PlanetsBehavior::run(eventType_t *event)
 {
     this->movePlanets();
 }
@@ -188,7 +188,7 @@ void BackgroundBehavior::moveBackground()
     myclock::resetClock(this->backgroundClock);
 }
 
-void BackgroundBehavior::run(std::string &key)
+void BackgroundBehavior::run(eventType_t *event)
 {
     this->moveBackground();
 }
@@ -235,10 +235,13 @@ Background::~Background()
 
 //------------------------------------Menu---------------------------------------
 
-void MenuBehavior::run(std::string &key)
+void MenuBehavior::run(eventType_t *event)
 {
+    if (event->isMouseBtnPressed == true)
+        std::cout << "WOW ! Pressed at x: " << event->mouseButtonPressedCoordinates.x << " and y: " << event->mouseButtonPressedCoordinates.y << std::endl;
+
     for (size_t i = 0; i != this->objs->grabObjects().size(); i += 1)
-        this->objs->grabObjects().at(i)->run(key);
+        this->objs->grabObjects().at(i)->run(event);
     this->parent->setGraphical(this->objs->getGraphicalComponents());
 }
 

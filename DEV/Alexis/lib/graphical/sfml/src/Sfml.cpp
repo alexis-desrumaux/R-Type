@@ -9,69 +9,6 @@
 #include "../include/Components.hpp"
 #include <chrono>
 
-void SFML::SFML::setEventKey(int nb)
-{
-    this->eventKey = nb;
-}
-
-int SFML::SFML::getEventKey()
-{
-    return this->eventKey;
-}
-
-int SFML::SFML::manageEventOnKeyboard(sf::Event event)
-{
-    int nb = 0;
-    if (event.type == sf::Event::Closed) {
-        printf("CLOSED\n");
-        nb = 84;
-        this->isRunning = false;
-    }
-    if (event.key.code == sf::Keyboard::Comma) {
-        printf("PREVLIB\n");
-        nb = Prev_Lib_Key;
-    }
-    if (event.key.code == sf::Keyboard::SemiColon) {
-        printf("NEXTLIB\n");
-        nb = Next_Lib_Key;
-    }
-    if (event.key.code == sf::Keyboard::Num1) {
-        printf("PREVGAME\n");
-        nb = Prev_Game_Key;
-    }
-    if (event.key.code == sf::Keyboard::Num2) {
-        printf("NEXTGAME\n");
-        nb = Next_Game_Key;
-    }
-    return nb;
-}
-
-int manageEvent(sf::Event event)
-{
-    int nb = 0;
-    if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Q) {
-        printf("CLOSED\n");
-        nb = 84;
-    }
-    if (event.key.code == sf::Keyboard::Comma) {
-        printf("PREVLIB\n");
-        nb = Prev_Lib_Key;
-    }
-    if (event.key.code == sf::Keyboard::SemiColon) {
-        printf("NEXTLIB\n");
-        nb = Next_Lib_Key;
-    }
-    if (event.key.code == sf::Keyboard::Num1) {
-        printf("PREVGAME\n");
-        nb = Prev_Game_Key;
-    }
-    if (event.key.code == sf::Keyboard::Num2) {
-        printf("NEXTGAME\n");
-        nb = Next_Game_Key;
-    }
-    return nb;
-}
-
 sf::Color convertColorFromComponent(Component::Color::Color color)
 {
     switch (color) {
@@ -338,7 +275,66 @@ void SFML::SFML::checkForNewComponents(std::vector<Components *> &components)
     }
 }
 
-std::string SFML::SFML::display(std::vector<Components *> components)
+void resetEventStruct(eventType_t *eventStruct)
+{
+    eventStruct->isClosed = false;
+    eventStruct->isKeyPressed = false;
+    eventStruct->isKeyReleased = false;
+    eventStruct->isMouseBtnPressed = false;
+    eventStruct->isMouseBtnReleased = false;
+    eventStruct->isMouseMoved = false;
+    eventStruct->keyPressed = "";
+    eventStruct->mouseButtonPressedCoordinates.x = 0;
+    eventStruct->mouseButtonPressedCoordinates.y = 0;
+    eventStruct->mouseButtonPressedType = Mouse::Button::Type::NONE;
+    eventStruct->mouseCoordinates.x = 0;
+    eventStruct->mouseCoordinates.y = 0;
+}
+
+void fillEventStruct(eventType_t *eventStruct, sf::Event event, sf::RenderWindow *window)
+{
+    switch (event.type)
+    {
+        case sf::Event::Closed:
+            eventStruct->isClosed = true;
+            break;
+        case sf::Event::MouseButtonPressed:
+            eventStruct->isMouseBtnPressed = true;
+
+
+
+            std::cout << "window size width: " << window->getSize().x << " height: " << window->getSize().y << std::endl;
+
+            eventStruct->mouseButtonPressedCoordinates.x = (event.mouseButton.x * 1920) / window->getSize().x;
+            eventStruct->mouseButtonPressedCoordinates.y = (event.mouseButton.y * 1080) / window->getSize().y;
+            if (event.mouseButton.button == sf::Mouse::Left)
+                eventStruct->mouseButtonPressedType = Mouse::Button::Type::LEFT;
+            if (event.mouseButton.button == sf::Mouse::Middle)
+                eventStruct->mouseButtonPressedType = Mouse::Button::Type::MIDDLE;
+            if (event.mouseButton.button == sf::Mouse::Right)
+                eventStruct->mouseButtonPressedType = Mouse::Button::Type::RIGHT;
+            break;
+        case sf::Event::MouseButtonReleased:
+            eventStruct->isKeyReleased = true;
+            break;
+        case sf::Event::MouseMoved:
+            eventStruct->isMouseMoved = true;
+            eventStruct->mouseCoordinates.x = event.mouseMove.x;
+            eventStruct->mouseCoordinates.y = event.mouseMove.y;
+            break;
+        case sf::Event::KeyPressed:
+            eventStruct->isKeyPressed = true;
+            eventStruct->keyPressed = SFKeyToString(event.key.code);
+            break;
+        case sf::Event::KeyReleased:
+            eventStruct->isKeyReleased = true;
+            break;
+        default:
+            break;
+    }
+}
+
+eventType_t *SFML::SFML::display(std::vector<Components *> components)
 {
     sf::Event event;
     std::string keyPressed = "";
@@ -347,21 +343,20 @@ std::string SFML::SFML::display(std::vector<Components *> components)
     this->checkForDeletedComponents(components);
     this->checkForMovedComponents(components);
 
+    resetEventStruct(eventStruct);
     while (this->window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             this->isRunning = false;
             this->window->close();
         }
-        if (event.type == event.KeyPressed && event.type != event.MouseButtonPressed) {
-            keyPressed = SFKeyToString(event.key.code);
-        }
+        fillEventStruct(this->eventStruct, event, this->window);
     }
     this->window->clear();
     manageUpdate(components);
     draw();
     this->window->display();
     resetStateComponents(components);
-    return keyPressed;
+    return this->eventStruct;
 }
 
 void deleteUnusedLComponents(std::vector<SFML::LComponents *>&lComponents, std::vector<size_t> listLComponentSavedIndex)
@@ -379,77 +374,13 @@ void deleteUnusedLComponents(std::vector<SFML::LComponents *>&lComponents, std::
     }
 }
 
-/*
-size_t initLibFindLComponentsIndex(std::vector<SFML::LComponents *>&lcomponent, std::string name)
-{
-    for (size_t i = 0; !lcomponent.empty() && i != lcomponent.size(); i += 1) {
-        if (lcomponent.at(i)->componentName == name)
-            return i;
-    }
-    return 0;
-}
-
-SFML::LComponents *initLibFindLComponentsExist(std::vector<SFML::LComponents *>&lcomponent, std::string name)
-{
-    for (size_t i = 0; !lcomponent.empty() && i != lcomponent.size(); i += 1) {
-        if (lcomponent.at(i)->componentName == name)
-            return lcomponent.at(i);
-    }
-    return NULL;
-}
-
-*/
-
-/*int SFML::SFML::initLib(std::vector<Components *> components)
-{
-    std::vector<size_t> listLComponentSavedIndex;
-    std::vector<LComponents *> newList;
-
-    for (size_t i = 0; i != components.size(); i += 1) {
-        switch (components.at(i)->type)
-        {
-        case listComponent::TEXT:
-            if (initLibFindLComponentsExist(this->lComponents, components.at(i)->componentName) != NULL) {
-                listLComponentSavedIndex.push_back(initLibFindLComponentsIndex(this->lComponents, components.at(i)->componentName));
-                LComponent::Text *txt = dynamic_cast<LComponent::Text *>(initLibFindLComponentsExist(this->lComponents, components.at(i)->componentName));
-                newList.push_back(txt);
-            }
-            else {
-                newList.push_back(new LComponent::Text(dynamic_cast<Component::Text *>(components.at(i))));
-            }
-            break;
-        case listComponent::SPRITE:
-            if (initLibFindLComponentsExist(this->lComponents, components.at(i)->componentName) != NULL) {
-                listLComponentSavedIndex.push_back(initLibFindLComponentsIndex(this->lComponents, components.at(i)->componentName));
-                LComponent::Sprite *sprite = dynamic_cast<LComponent::Sprite *>(initLibFindLComponentsExist(this->lComponents, components.at(i)->componentName));
-                newList.push_back(sprite);
-            }
-            else
-                newList.push_back(new LComponent::Sprite(dynamic_cast<Component::Sprite *>(components.at(i))));
-            break;
-        case listComponent::AUDIO:
-            if (initLibFindLComponentsExist(this->lComponents, components.at(i)->componentName) != NULL) {
-                listLComponentSavedIndex.push_back(initLibFindLComponentsIndex(this->lComponents, components.at(i)->componentName));
-                LComponent::Audio *audio = dynamic_cast<LComponent::Audio *>(initLibFindLComponentsExist(this->lComponents, components.at(i)->componentName));
-                newList.push_back(audio);
-            }
-            else
-                newList.push_back(new LComponent::Audio(dynamic_cast<Component::Audio *>(components.at(i))));
-            break;
-        default:
-            break;
-        }
-    }
-    deleteUnusedLComponents(this->lComponents, listLComponentSavedIndex);
-    this->lComponents = newList;
-    return 0;
-}*/
-
 SFML::SFML::SFML()
 {
     this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "R-Type");
     this->name = "";
-    this->type = 1;
+    this->type = "SFML";
+    this->eventStruct = new eventType_t;
+    resetEventStruct(this->eventStruct);
     this->window->setFramerateLimit(60);
 }
 

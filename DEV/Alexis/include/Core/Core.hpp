@@ -20,6 +20,7 @@
 #include "../../lib/GameCore/include/Objects/Objects.hpp"
 #include "../../lib/graphical/sfml/include/IGLib.hpp"
 #include "../../lib/graphical/sfml/include/Components.hpp"
+#include "../../lib/graphical/sfml/include/Event.hpp"
 
 #include "./GameState/Menu/Menu.hpp"
 
@@ -48,7 +49,7 @@ class Core {
         IGLib *gl;
         void *handle_lib;
         Objects *gameObjs;
-        std::string keyPressed;
+        eventType_t *event;
         Game::State state;
         bool GameStateInit;
 };

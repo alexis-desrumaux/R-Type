@@ -11,6 +11,8 @@
 #include "../../../../lib/GameCore/include/Objects/Objects.hpp"
 #include "../../../../lib/GameCore/include/Object/Object.hpp"
 #include "../../../../lib/GameCore/include/Tools/Tools.hpp"
+#include "../../../../lib/graphical/sfml/include/Event.hpp"
+
 
 #include <sys/time.h>
 
@@ -19,7 +21,7 @@ class StartBehavior : public Behavior
     public:
         StartBehavior(Object *parent);
         ~StartBehavior();
-        void run(std::string &keyPressed);
+        void run(eventType_t *event);
     protected:
     private:
     //functions
@@ -45,7 +47,7 @@ class PlanetsBehavior : public Behavior
     public:
         PlanetsBehavior(Object *parent);
         ~PlanetsBehavior();
-        void run(std::string &key);
+        void run(eventType_t *event);
     protected:
     private:
     //functions
@@ -71,7 +73,7 @@ class BackgroundBehavior : public Behavior
     public:
         BackgroundBehavior(Object *parent);
         ~BackgroundBehavior();
-        void run(std::string &key);
+        void run(eventType_t *event);
         void enableFasterSpeed();
     protected:
     private:
@@ -104,7 +106,7 @@ class MenuBehavior : public Behavior
     public:
         MenuBehavior(Object *parent);
         ~MenuBehavior();
-        void run(std::string &key);
+        void run(eventType_t *event);
     protected:
     private:
     //functions

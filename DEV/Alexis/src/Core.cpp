@@ -26,7 +26,7 @@ void Core::runGame()
         if (this->GameStateInit == false)
             this->initMenu();
         else
-            this->gameObjs->getObjectByName("Menu")->run(this->keyPressed);
+            this->gameObjs->getObjectByName("Menu")->run(this->event);
         break;
     default:
         break;
@@ -37,9 +37,9 @@ int Core::launch()
 {
     while (this->gl->isRunning == true) {
         this->runGame();
-        this->keyPressed = this->gl->display(this->gameObjs->getGraphicalComponents());
-        if (!this->keyPressed.empty())
-            std::cout << this->keyPressed << std::endl;
+        this->event = this->gl->display(this->gameObjs->getGraphicalComponents());
+        if (!this->event->keyPressed.empty())
+            std::cout << this->event->keyPressed << std::endl;
     }
     return 0;
 }

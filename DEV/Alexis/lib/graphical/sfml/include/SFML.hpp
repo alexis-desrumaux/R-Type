@@ -17,6 +17,7 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
 #include "IGLib.hpp"
+#include "./Event.hpp"
 
 
 
@@ -77,23 +78,19 @@ namespace SFML
         public:
             SFML();
             virtual ~SFML();
-            virtual std::string display(std::vector<Components *>);
-            /*virtual int initLib(std::vector<Components *>);*/
-            virtual int getEventKey();
-            virtual void setEventKey(int);
-            int manageEventOnKeyboard(sf::Event event);
+            virtual eventType_t *display(std::vector<Components *>);
+            int draw(void);
+        protected:
+        private:
+        //fonctions
             void checkForNewComponents(std::vector<Components *>&);
             void checkForDeletedComponents(std::vector<Components *>&);
             void checkForMovedComponents(std::vector<Components *>&);
             int manageUpdate(std::vector<Components *>);
-            int draw(void);
-        protected:
-        private:
-            //settings
-                sf::RenderWindow *window;
-                sf::CircleShape shape;
-                int eventKey;
-                std::vector<LComponents *> lComponents;
+        //settings
+            sf::RenderWindow *window;
+            eventType_t *eventStruct;
+            std::vector<LComponents *> lComponents;
     };
 }
 
