@@ -13,16 +13,18 @@
 class Objects {
     public:
     //fonctions
-        Objects();
+        Objects(Object *parent);
         ~Objects();
         std::vector<Components *> &getGraphicalComponents();
         std::vector<Object *> &grabObjects();
         Object *getObjectByName(std::string);
+        Object *getParent();
     //data
     protected:
     private:
     //functions
     //data
+        Object *parent;
         std::vector<Components *> graphicalComponents;
         std::vector<Object *> objects;
 };

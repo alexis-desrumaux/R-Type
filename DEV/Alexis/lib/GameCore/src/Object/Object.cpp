@@ -7,6 +7,11 @@
 
 #include "../../include/Object/Object.hpp"
 
+Objects *Object::getParent()
+{
+    return this->parent;
+}
+
 const std::string &Object::getName()
 {
     return this->name;

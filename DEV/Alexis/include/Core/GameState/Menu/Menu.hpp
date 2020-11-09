@@ -16,6 +16,25 @@
 
 #include <sys/time.h>
 
+class UIBehavior : public Behavior
+{
+    public:
+        UIBehavior(Object *parent);
+        ~UIBehavior();
+        void run(eventType_t *event);
+    protected:
+    private:
+};
+
+class UI : public Object
+{
+    public:
+        UI(std::string name, Objects *parent);
+        ~UI();
+    protected:
+    private:
+};
+
 class StartBehavior : public Behavior
 {
     public:

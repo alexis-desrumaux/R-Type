@@ -74,7 +74,7 @@ Core::Core()
     this->handle_lib = load("./lib/graphical/lib_sfml.so");
     this->gl = getGLib("createLib", this->handle_lib);
     this->gl->isRunning = true;
-    this->gameObjs = new Objects();
+    this->gameObjs = new Objects(NULL);
     this->GameStateInit = false;
 }
 

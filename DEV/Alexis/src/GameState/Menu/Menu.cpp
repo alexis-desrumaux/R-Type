@@ -76,7 +76,7 @@ void PlanetsBehavior::movePlanets()
         Component::Sprite *lastplanet = this->planets.at(this->planets.size() - 1);
         std::pair<float, float> posLastPlanet = lastplanet->getPosition();
         if (posLastPlanet.first < -1180) {
-            Object *background = this->parent->parent->getObjectByName("background");
+            Object *background = this->parent->getParent()->getObjectByName("background");
             if (background != NULL) {
                 if (background->getBehavior()->getName() == "BackgroundBehavior") {
                     BackgroundBehavior *bb = dynamic_cast<BackgroundBehavior *>(background->getBehavior());
@@ -100,22 +100,22 @@ void PlanetsBehavior::initPlanets()
     std::vector<Components *> graphical;
     Component::Sprite *planet = NULL;
 
-    planet = new Component::Sprite("menu_earth", "./media/Menu/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_earth", "./media/Planets/Solar_System/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_mars", "./media/Menu/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_mars", "./media/Planets/Solar_System/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_jupiter", "./media/Menu/jupiter.png", std::pair<float, float>(6860, -300), std::pair<float, float>(3, 3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_jupiter", "./media/Planets/Solar_System/jupiter.png", std::pair<float, float>(6860, -300), std::pair<float, float>(3, 3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_saturn", "./media/Menu/saturn.png", std::pair<float, float>(15180, -200), std::pair<float, float>(2, 2), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_saturn", "./media/Planets/Solar_System/saturn.png", std::pair<float, float>(15180, -200), std::pair<float, float>(2, 2), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_uranus", "./media/Menu/uranus.png", std::pair<float, float>(20180, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_uranus", "./media/Planets/Solar_System/uranus.png", std::pair<float, float>(20180, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_neptune", "./media/Menu/neptune.png", std::pair<float, float>(23180, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_neptune", "./media/Planets/Solar_System/neptune.png", std::pair<float, float>(23180, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
     this->planets.push_back(planet);
     graphical.push_back(planet);
     this->parent->setGraphical(graphical);
@@ -301,7 +301,7 @@ void MenuBehavior::initMenu()
 MenuBehavior::MenuBehavior(Object *parent) : Behavior("MenuBehavior", parent)
 {
     this->parent->getGraphical().clear();
-    this->objs = new Objects();
+    this->objs = new Objects(this->parent);
     this->initMenu();
 }
 

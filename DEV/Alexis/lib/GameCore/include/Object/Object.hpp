@@ -25,10 +25,11 @@ class Object {
         void setBehavior(Behavior *behavior);
         Behavior *getBehavior();
         const std::string &getName();
-        Objects *parent;
+        Objects *getParent();
     protected:
     //functions
     //data
+        Objects *parent;
         std::string name;
         Behavior *behavior;
         std::vector<Components *> graphical;

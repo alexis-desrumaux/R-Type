@@ -7,6 +7,11 @@
 
 #include "../../include/Objects/Objects.hpp"
 
+Object *Objects::getParent()
+{
+    return this->parent;
+}
+
 Object *Objects::getObjectByName(std::string name)
 {
     for (size_t i = 0; i != this->objects.size(); i += 1) {
@@ -32,8 +37,9 @@ std::vector<Components *> &Objects::getGraphicalComponents()
     return this->graphicalComponents;
 }
 
-Objects::Objects()
+Objects::Objects(Object *parent)
 {
+    this->parent = parent;
 }
 
 Objects::~Objects()
