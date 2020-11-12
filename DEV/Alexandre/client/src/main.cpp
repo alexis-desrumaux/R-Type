@@ -11,7 +11,10 @@ int main(int ac, char **av)
 {
     myClient client;
 
-    client.send("Hello From Client");
-    client.receiver(); //Le resultat est stocker dans client.result
+    client.io_service.run(); //    Si run est executer ici seulement les handlers appeler avant lui sont executer
+
+    client.call("Cool");
+    client.call("Michel !");
+    std::cout << "MIAOU = " << client.count << std::endl;
 	return 0;
 }

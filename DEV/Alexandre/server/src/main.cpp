@@ -11,7 +11,9 @@ int main(int ac, char **av)
 {
     myServer server;
 
-    server.receiver(); //Le resultat est stocker dans server.result
-    server.send("Hello From Server");
+    server.io_service.run(); //Cette partie fait une boucle qui recoit constamment les donnees des clients
+
+    //server.handle_receive(boost::asio::placeholders::error,
+    //boost::asio::placeholders::bytes_transferred, "Un jour");
 	return 0;
 }
