@@ -26,7 +26,7 @@ void StartBehavior::run(eventType_t *event)
 void StartBehavior::initStart()
 {
     std::vector<Components *> startComponents;
-    this->startTxt = new Component::Text("menu_startTxt", "START", "./media/Fonts/arcade.ttf", 60, Component::Color::White, std::pair<float, float>(800, 500), std::pair<int, int>(-1, -1));
+    this->startTxt = new Component::Text("menu_startTxt", "START", "./media/Fonts/arcade.ttf", 60, Component::Color::White, std::pair<float, float>(800, 500));
     startComponents.push_back(this->startTxt);
     this->parent->setGraphical(startComponents);
 }
@@ -100,22 +100,22 @@ void PlanetsBehavior::initPlanets()
     std::vector<Components *> graphical;
     Component::Sprite *planet = NULL;
 
-    planet = new Component::Sprite("menu_earth", "./media/Planets/Solar_System/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_earth", "./media/Planets/Solar_System/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_mars", "./media/Planets/Solar_System/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_mars", "./media/Planets/Solar_System/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_jupiter", "./media/Planets/Solar_System/jupiter.png", std::pair<float, float>(6860, -300), std::pair<float, float>(3, 3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_jupiter", "./media/Planets/Solar_System/jupiter.png", std::pair<float, float>(6860, -300), std::pair<float, float>(3, 3));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_saturn", "./media/Planets/Solar_System/saturn.png", std::pair<float, float>(15180, -200), std::pair<float, float>(2, 2), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_saturn", "./media/Planets/Solar_System/saturn.png", std::pair<float, float>(15180, -200), std::pair<float, float>(2, 2));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_uranus", "./media/Planets/Solar_System/uranus.png", std::pair<float, float>(20180, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_uranus", "./media/Planets/Solar_System/uranus.png", std::pair<float, float>(20180, 0), std::pair<float, float>(1, 1));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_neptune", "./media/Planets/Solar_System/neptune.png", std::pair<float, float>(23180, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    planet = new Component::Sprite("menu_neptune", "./media/Planets/Solar_System/neptune.png", std::pair<float, float>(23180, 0), std::pair<float, float>(1, 1));
     this->planets.push_back(planet);
     graphical.push_back(planet);
     this->parent->setGraphical(graphical);
@@ -197,9 +197,9 @@ void BackgroundBehavior::initBackground()
 {
     std::vector<Components *> graphical;
 
-    this->background1 = new Component::Sprite("menu_background1", "./media/Menu/menu_background1.jpg", std::pair<float, float>(0, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
-    this->background2 = new Component::Sprite("menu_background2", "./media/Menu/menu_background1.jpg", std::pair<float, float>(1920, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
-    this->background3 = new Component::Sprite("menu_background3", "./media/Menu/menu_background1.jpg", std::pair<float, float>(3840, 0), std::pair<float, float>(1, 1), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+    this->background1 = new Component::Sprite("menu_background1", "./media/Menu/menu_background1.jpg", std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
+    this->background2 = new Component::Sprite("menu_background2", "./media/Menu/menu_background1.jpg", std::pair<float, float>(1920, 0), std::pair<float, float>(1, 1));
+    this->background3 = new Component::Sprite("menu_background3", "./media/Menu/menu_background1.jpg", std::pair<float, float>(3840, 0), std::pair<float, float>(1, 1));
 
     graphical.push_back(this->background1);
     graphical.push_back(this->background2);
@@ -249,22 +249,22 @@ void MenuBehavior::initShips()
 {
     Object *redShip = new Object("redShip", this->objs);
     std::vector<Components *> redShipComponents;
-    redShipComponents.push_back(new Component::Sprite("menu_redShip", "./media/ship.png", std::pair<float, float>(500, 500), std::pair<float, float>(0.7, 0.7), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
+    redShipComponents.push_back(new Component::Sprite("menu_redShip", "./media/ship.png", std::pair<float, float>(500, 500), std::pair<float, float>(0.7, 0.7)));
     redShip->setGraphical(redShipComponents);
 
     Object *yellowShip = new Object("yellowShip", this->objs);
     std::vector<Components *> yellowShipComponents;
-    yellowShipComponents.push_back(new Component::Sprite("menu_yellowShip", "./media/ship2.png", std::pair<float, float>(100, 500), std::pair<float, float>(0.7, 0.7), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
+    yellowShipComponents.push_back(new Component::Sprite("menu_yellowShip", "./media/ship2.png", std::pair<float, float>(100, 500), std::pair<float, float>(0.7, 0.7)));
     yellowShip->setGraphical(yellowShipComponents);
 
     Object *greenShip = new Object("greenShip", this->objs);
     std::vector<Components *> greenShipComponents;
-    greenShipComponents.push_back(new Component::Sprite("menu_greenShip", "./media/ship3.png", std::pair<float, float>(250, 300), std::pair<float, float>(0.7, 0.7), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
+    greenShipComponents.push_back(new Component::Sprite("menu_greenShip", "./media/ship3.png", std::pair<float, float>(250, 300), std::pair<float, float>(0.7, 0.7)));
     greenShip->setGraphical(greenShipComponents);
 
     Object *blueShip = new Object("blueShip", this->objs);
     std::vector<Components *> blueShipComponents;
-    blueShipComponents.push_back(new Component::Sprite("menu_blueShip", "./media/ship4.png", std::pair<float, float>(250, 700), std::pair<float, float>(0.7, 0.7), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
+    blueShipComponents.push_back(new Component::Sprite("menu_blueShip", "./media/ship4.png", std::pair<float, float>(250, 700), std::pair<float, float>(0.7, 0.7)));
     blueShip->setGraphical(blueShipComponents);
 
     this->objs->grabObjects().push_back(redShip);
@@ -285,7 +285,7 @@ void MenuBehavior::initMenu()
 
     Object *title = new Object("title", this->objs);
     std::vector<Components *> titleComponents;
-    titleComponents.push_back(new Component::Sprite("menu_title1", "./media/Menu/title1.png", std::pair<float, float>(700, 50), std::pair<float, float>(1.3, 1.3), std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1))));
+    titleComponents.push_back(new Component::Sprite("menu_title1", "./media/Menu/title1.png", std::pair<float, float>(700, 50), std::pair<float, float>(1.3, 1.3)));
     title->setGraphical(titleComponents);
 
     Object *start = new Start("start", this->objs);

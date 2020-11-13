@@ -27,7 +27,6 @@ RM	= rm -f
 
 SRCS	=	./src/main.cpp  \
 			./src/Core.cpp \
-			./src/Components.cpp \
 			./src/GameState/Menu/Menu.cpp \
 
 OBJS	= $(SRCS:.cpp=.o)
@@ -38,15 +37,15 @@ CPPFLAGS += -Wall -Wextra
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	make re -C ./lib/graphical/sfml/ && make re -C ./lib/GameCore/ && \
-	$(CC) $(OBJS) -o $(NAME) ./lib/GameCore/libmy_GameCore.a -ldl && \
+	make re -C ./lib/ && \
+	$(CC) $(OBJS) -o $(NAME) ./lib/libmy.so -ldl && \
     $(ECHO) $(GREEN) "[OK]"$(TEAL)"  BUILD : rtype" $(DEFAULT)  || \
     $(ECHO) $(RED) "[ERROR]" $(TEAL) arcade $(DEFAULT)
 clean:
 	@$(RM) $(OBJS) && \
         $(ECHO) $(TEAL)"  CLEAN : $(OBJS)" $(DEFAULT)
 fclean: clean
-	make fclean -C ./lib/graphical/sfml/ && make fclean -C ./lib/GameCore/ && \
+	make fclean -C ./lib/ && \
 	$(RM) $(NAME)
 
 re: fclean all

@@ -19,6 +19,7 @@
 
 #include "../../lib/GameCore/include/Objects/Objects.hpp"
 #include "../../lib/graphical/sfml/include/IGLib.hpp"
+#include "../../lib/graphical/sfml/include/SFML.hpp"
 #include "../../lib/graphical/sfml/include/Components.hpp"
 #include "../../lib/graphical/sfml/include/Event.hpp"
 

@@ -5,7 +5,7 @@
 ** Components
 */
 
-#include "../lib/graphical/sfml/include/Components.hpp"
+#include "../include/Components.hpp"
 
 bool isOnChangeExist(std::vector<int> *onChange, int def)
 {
@@ -25,6 +25,28 @@ bool isOnChangeExist(std::vector<int> *onChange, int def)
 }
 
 /*-------------------------AUDIO-----------------------*/
+
+std::string Component::Audio::serialize(void)
+{
+
+    Parser parser = Parser();
+
+    parser.addKey("document", "data");
+    parser.addKey("type", "AUDIO");
+    parser.addKey("name", this->componentName);
+    parser.addKey("display", this->display ? "true" : "false");
+    parser.addKey("path", this->path);
+    if (this->audioState == AudioState::AudioState::PAUSE)
+        parser.addKey("audioState", "PAUSE");
+    if (this->audioState == AudioState::AudioState::PLAY)
+        parser.addKey("audioState", "PLAY");
+    if (this->audioState == AudioState::AudioState::RELOAD)
+        parser.addKey("audioState", "RELOAD");
+    if (this->audioState == AudioState::AudioState::STOP)
+        parser.addKey("audioState", "STOP");
+    parser.addKey("loop", this->loop ? "true" : "false");
+    return parser.stringify();
+}
 
 void Component::Audio::resetState()
 {
@@ -91,6 +113,35 @@ std::string Component::Audio::getAudioPath()
     return this->path;
 }
 
+Component::Audio::Audio(std::string data)
+{
+    Parser parser = Parser(data);
+    Parser f;
+    std::cout << parser.stringify() << std::endl;
+
+    if (parser.isKeyExist("document") == false)
+        return;
+    std::cout << parser.getValueOfKey("document") << std::endl;
+    if (parser.getValueOfKey("document") != "data")
+        return;
+    if (parser.getValueOfKey("type") != "AUDIO")
+        return;
+    this->type = listComponent::AUDIO;
+    this->componentName = parser.getValueOfKey("name");
+    this->display = parser.getValueOfKey("display") == "true" ? 1 : 0;
+    this->path = parser.getValueOfKey("path");
+    std::string audioState = parser.getValueOfKey("audioState");
+    if (audioState == "PAUSE")
+        this->audioState = Component::AudioState::PAUSE;
+    if (audioState == "PLAY")
+        this->audioState = Component::AudioState::PLAY;
+    if (audioState == "RELOAD")
+        this->audioState = Component::AudioState::RELOAD;
+    if (audioState == "STOP")
+        this->audioState = Component::AudioState::STOP;
+    this->loop = parser.getValueOfKey("loop") == "true" ? 1 : 0;
+}
+
 Component::Audio::Audio(std::string componentName, std::string path, AudioState::AudioState state, bool loop)
 {
     this->componentName = componentName;
@@ -109,6 +160,33 @@ Component::Audio::~Audio()
 
 /*-------------------------SPRITE-----------------------*/
 
+std::string Component::Sprite::serialize(void)
+{
+    Parser parser;
+    Parser f;
+
+    parser.addKey("document", "data");
+    parser.addKey("type", "SPRITE");
+    parser.addKey("name", this->componentName);
+    parser.addKey("display", this->display ? "true" : "false");
+    parser.addKey("path", this->path);
+    f.addKey("x", std::to_string(this->pos.first));
+    f.addKey("y", std::to_string(this->pos.second));
+    parser.addKey("pos", f.stringify());
+    f.clear();
+    f.addKey("scaleX", std::to_string(this->scale.first));
+    f.addKey("scaleY", std::to_string(this->scale.second));
+    parser.addKey("scale", f.stringify());
+    f.clear();
+    f.addKey("x", std::to_string(this->rect.first.first));
+    f.addKey("width", std::to_string(this->rect.first.second));
+    f.addKey("y", std::to_string(this->rect.second.first));
+    f.addKey("height", std::to_string(this->rect.second.second));
+    parser.addKey("rect", f.stringify());
+    f.clear();
+    return parser.stringify();
+}
+
 void Component::Sprite::resetState(void)
 {
     this->state.first = Component::State::NONE;
@@ -124,22 +202,6 @@ const std::pair<Component::State::State, std::vector<Component::Sprite::onChange
 &Component::Sprite::getState(void) const
 {
     return this->state;
-}
-
-void Component::Sprite::setAscii(std::pair<std::string, std::pair<int, int>> ascii)
-{
-    this->ascii = ascii;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_ascii) == false)
-        this->state.second.push_back(this->_ascii);
-}
-
-std::pair<std::string, std::pair<int, int>> Component::Sprite::getAscii()
-{
-    return this->ascii;
 }
 
 void Component::Sprite::setRect(int x, int size_x, int y, int size_y)
@@ -209,7 +271,37 @@ std::string Component::Sprite::getSpritePath(void)
     return this->path;
 }
 
-Component::Sprite::Sprite(std::string componentName, std::string path, std::pair<float, float> pos, std::pair<float, float> scale, std::pair<std::string, std::pair<int, int>> ascii)
+Component::Sprite::Sprite(std::string data)
+{
+    Parser parser = Parser(data);
+    Parser f;
+    std::cout << parser.stringify() << std::endl;
+
+    if (parser.isKeyExist("document") == false)
+        return;
+    std::cout << parser.getValueOfKey("document") << std::endl;
+    if (parser.getValueOfKey("document") != "data")
+        return;
+    if (parser.getValueOfKey("type") != "SPRITE")
+        return;
+    this->type = listComponent::SPRITE;
+    this->componentName = parser.getValueOfKey("name");
+    this->display = parser.getValueOfKey("display") == "true" ? 1 : 0;
+    this->path = parser.getValueOfKey("path");
+    f.set(parser.getValueOfKey("pos"));
+    this->pos.first = std::stof(f.getValueOfKey("x"));
+    this->pos.second = std::stof(f.getValueOfKey("y"));
+    f.set(parser.getValueOfKey("scale"));
+    this->scale.first = std::stof(f.getValueOfKey("scaleX"));
+    this->scale.second = std::stof(f.getValueOfKey("scaleY"));
+    f.set(parser.getValueOfKey("rect"));
+    this->rect.first.first = std::stoi(f.getValueOfKey("x"));
+    this->rect.first.second = std::stoi(f.getValueOfKey("width"));
+    this->rect.second.first = std::stoi(f.getValueOfKey("y"));
+    this->rect.second.second = std::stoi(f.getValueOfKey("height"));
+}
+
+Component::Sprite::Sprite(std::string componentName, std::string path, std::pair<float, float> pos, std::pair<float, float> scale)
 {
     this->componentName = componentName;
     this->type = listComponent::SPRITE;
@@ -217,7 +309,6 @@ Component::Sprite::Sprite(std::string componentName, std::string path, std::pair
     this->path = path;
     this->pos = pos;
     this->scale = scale;
-    this->ascii = ascii;
     this->rect = std::pair<std::pair<int, int>,
     std::pair<int, int>>({-1, -1}, {-1, -1});
     this->state.first = Component::State::ADD;
@@ -229,6 +320,34 @@ Component::Sprite::~Sprite()
 }
 
 /*-------------------------TEXT-----------------------*/
+
+std::string Component::Text::serialize(void)
+{
+    Parser parser;
+    Parser f;
+
+    parser.addKey("document", "data");
+    parser.addKey("type", "TEXT");
+    parser.addKey("name", this->componentName);
+    parser.addKey("display", this->display ? "true" : "false");
+    if (this->color == Component::Color::Color::Black)
+        parser.addKey("color", "BLACK");
+    if (this->color == Component::Color::Color::Blue)
+        parser.addKey("color", "BLUE");
+    if (this->color == Component::Color::Color::Green)
+        parser.addKey("color", "GREEN");
+    if (this->color == Component::Color::Color::Red)
+        parser.addKey("color", "RED");
+    if (this->color == Component::Color::Color::White)
+        parser.addKey("color", "WHITE");
+    parser.addKey("str", this->str);
+    parser.addKey("fontPath", this->fontPath);
+    parser.addKey("size", std::to_string(this->size));
+    f.addKey("x", std::to_string(this->pos.first));
+    f.addKey("y", std::to_string(this->pos.second));
+    parser.addKey("pos", f.stringify());
+    return parser.stringify();
+}
 
 void Component::Text::resetState(void)
 {
@@ -245,22 +364,6 @@ const std::pair<Component::State::State, std::vector<Component::Text::onChange>>
 &Component::Text::getState(void) const
 {
     return this->state;
-}
-
-void Component::Text::setAsciiPos(std::pair<int, int> pos)
-{
-    this->asciiPos = pos;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_asciiPos) == false)
-        this->state.second.push_back(this->_asciiPos);
-}
-
-std::pair<int, int> Component::Text::getAsciiPos(void)
-{
-    return this->asciiPos;
 }
 
 void Component::Text::setPosXY(std::pair<float, float> pos)
@@ -343,8 +446,44 @@ Component::Color::Color Component::Text::getColor(void)
     return this->color;
 }
 
+Component::Text::Text(std::string data)
+{
+
+    Parser parser = Parser(data);
+    Parser f;
+    std::cout << parser.stringify() << std::endl;
+
+    if (parser.isKeyExist("document") == false)
+        return;
+    std::cout << parser.getValueOfKey("document") << std::endl;
+    if (parser.getValueOfKey("document") != "data")
+        return;
+    if (parser.getValueOfKey("type") != "TEXT")
+        return;
+    this->type = listComponent::TEXT;
+    this->componentName = parser.getValueOfKey("name");
+    this->display = parser.getValueOfKey("display") == "true" ? 1 : 0;
+    std::string color = parser.getValueOfKey("color");
+    if (color == "BLACK")
+        this->color = Component::Color::Color::Black;
+    if (color == "BLUE")
+        this->color = Component::Color::Color::Blue;
+    if (color == "GREEN")
+        this->color = Component::Color::Color::Green;
+    if (color == "RED")
+        this->color = Component::Color::Color::Red;
+    if (color == "WHITE")
+        this->color = Component::Color::Color::White;
+    this->str = parser.getValueOfKey("str");
+    this->fontPath = parser.getValueOfKey("fontPath");
+    this->size = std::stoi(parser.getValueOfKey("size"));
+    f.set(parser.getValueOfKey("pos"));
+    this->pos.first = std::stof(f.getValueOfKey("x"));
+    this->pos.second = std::stof(f.getValueOfKey("y"));
+}
+
 Component::Text::Text(std::string componentName, std::string str, std::string fontPath,
-int size, Color::Color color, std::pair<float, float> pos, std::pair<int, int> asciiPos)
+int size, Color::Color color, std::pair<float, float> pos)
 {
     this->componentName = componentName;
     this->type = listComponent::TEXT;
@@ -354,7 +493,6 @@ int size, Color::Color color, std::pair<float, float> pos, std::pair<int, int> a
     this->size = size;
     this->color = color;
     this->pos = pos;
-    this->asciiPos = asciiPos;
     this->state.first = Component::State::ADD;
 }
 
