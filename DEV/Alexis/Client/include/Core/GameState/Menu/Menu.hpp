@@ -12,6 +12,8 @@
 #include "../../../../lib/GameCore/include/Object/Object.hpp"
 #include "../../../../lib/GameCore/include/Tools/Tools.hpp"
 #include "../../../../lib/graphical/sfml/include/Event.hpp"
+#include <iostream>
+#include <memory>
 
 
 #include <sys/time.h>
@@ -21,7 +23,7 @@ class UIBehavior : public Behavior
     public:
         UIBehavior(Object *parent);
         ~UIBehavior();
-        void run(eventType_t *event);
+        void run(std::shared_ptr<eventType_t> event);
     protected:
     private:
 };
@@ -40,15 +42,15 @@ class StartBehavior : public Behavior
     public:
         StartBehavior(Object *parent);
         ~StartBehavior();
-        void run(eventType_t *event);
+        void run(std::shared_ptr<eventType_t> event);
     protected:
     private:
     //functions
         void initStart();
         void startAnimation();
     //data
-        Component::Text *startTxt;
-        myclock_t *startTxtClock;
+        std::shared_ptr<Component::Text> startTxt;
+        std::shared_ptr<myclock_t> startTxtClock;
         bool startTxtToogle;
 };
 
@@ -66,15 +68,15 @@ class PlanetsBehavior : public Behavior
     public:
         PlanetsBehavior(Object *parent);
         ~PlanetsBehavior();
-        void run(eventType_t *event);
+        void run(std::shared_ptr<eventType_t> event);
     protected:
     private:
     //functions
         void initPlanets();
         void movePlanets();
     //data
-        std::vector<Component::Sprite *> planets;
-        myclock_t *planetsBackgroundClock;
+        std::vector<std::shared_ptr<Component::Sprite>> planets;
+        std::shared_ptr<myclock_t> planetsBackgroundClock;
         bool enableFasterSpeed;
 };
 
@@ -92,7 +94,7 @@ class BackgroundBehavior : public Behavior
     public:
         BackgroundBehavior(Object *parent);
         ~BackgroundBehavior();
-        void run(eventType_t *event);
+        void run(std::shared_ptr<eventType_t> event);
         void enableFasterSpeed();
     protected:
     private:
@@ -101,14 +103,13 @@ class BackgroundBehavior : public Behavior
         void moveBackground();
         void moveBackground_next();
     //data
-        Component::Sprite *background1;
-        Component::Sprite *background2;
-        Component::Sprite *background3;
-        myclock_t *backgroundClock;
-        myclock_t *speedClock;
+        std::shared_ptr<Component::Sprite> background1;
+        std::shared_ptr<Component::Sprite> background2;
+        std::shared_ptr<Component::Sprite> background3;
+        std::shared_ptr<myclock_t> backgroundClock;
+        std::shared_ptr<myclock_t> speedClock;
         float speed;
         bool enableFasterSpeedToogle;
-
 };
 
 class Background : public Object
@@ -125,14 +126,14 @@ class MenuBehavior : public Behavior
     public:
         MenuBehavior(Object *parent);
         ~MenuBehavior();
-        void run(eventType_t *event);
+        void run(std::shared_ptr<eventType_t> event);
     protected:
     private:
     //functions
         void initMenu();
         void initShips();
     //data
-        Objects *objs;
+        std::shared_ptr<Objects> objs;
 };
 
 class Menu : public Object {

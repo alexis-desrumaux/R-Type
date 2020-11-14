@@ -14,7 +14,8 @@ void Core::runMenu()
 
 void Core::initMenu()
 {
-    this->gameObjs->grabObjects().push_back(new Menu("Menu", this->gameObjs));
+    Objects *o = this->gameObjs.get();
+    this->gameObjs->grabObjects().push_back(std::make_shared<Menu>("Menu", o));
     this->GameStateInit = true;
 }
 
@@ -41,6 +42,8 @@ int Core::launch()
         if (!this->event->keyPressed.empty())
             std::cout << this->event->keyPressed << std::endl;
     }
+    //delete this->gl;
+    //delete this->gameObjs;
     return 0;
 }
 
@@ -73,12 +76,13 @@ Core::Core()
 {
     /*this->handle_lib = load("./lib/graphical/lib_sfml.so");
     this->gl = getGLib("createLib", this->handle_lib);*/
-    this->gl = new SFML::SFML();
+    this->gl = std::make_shared<SFML::SFML>();
     this->gl->isRunning = true;
-    this->gameObjs = new Objects(NULL);
+    this->gameObjs = std::make_shared<Objects>();
     this->GameStateInit = false;
 }
 
 Core::~Core()
 {
+    std::cout << "DELETED CORE" << std::endl;
 }

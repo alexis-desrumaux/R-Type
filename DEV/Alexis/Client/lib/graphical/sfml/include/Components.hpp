@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include "../../../Parser/include/Parser.hpp"
 
 namespace listComponent {
@@ -25,7 +26,6 @@ class Components {
     //functions
         Components() = default;
         virtual ~Components() = default;
-        virtual void resetState(void) = 0;
         virtual std::string serialize(void) = 0;
     //data
         std::string componentName;
@@ -35,7 +35,7 @@ class Components {
     private:
 };
 
-Components *findInComponents(std::vector<Components *>, std::string);
+std::shared_ptr<Components> findInComponents(std::vector<std::shared_ptr<Components>>, std::string);
 
 namespace Component
 {
@@ -66,15 +66,6 @@ namespace Component
     }
     class Text : public Components {
         public:
-        //enum
-        enum onChange {
-            _none = -1,
-            _color = 0,
-            _str = 1,
-            _fontPath = 2,
-            _size = 3,
-            _pos = 4,
-        };
         //functions
             Text(std::string componentName, std::string str, std::string fontPath, int size, Color::Color color, std::pair<float, float> pos);
             Text(std::string data);
@@ -89,9 +80,6 @@ namespace Component
             void setFontSize(int size);
             std::pair<float, float> getPosXY(void);
             void setPosXY(std::pair<float, float> pos);
-            const std::pair<State::State, std::vector<onChange>> &getState(void) const;
-            void setState(State::State);
-            virtual void resetState(void);
             virtual std::string serialize(void);
 
         private:
@@ -101,18 +89,9 @@ namespace Component
             std::string fontPath;
             int size;
             std::pair<float, float> pos;
-            std::pair<State::State, std::vector<onChange>> state;
     };
     class Sprite : public Components {
         public:
-        //enum
-        enum onChange {
-            _none = -1,
-            _path = 0,
-            _pos = 1,
-            _scale = 2,
-            _rect = 3,
-        };
         //functions
             Sprite(std::string componentName, std::string path, std::pair<float, float> pos, std::pair<float, float> scale);
             Sprite(std::string data);
@@ -125,9 +104,6 @@ namespace Component
             void setScale(std::pair<float, float>);
             std::pair<std::pair<int, int>, std::pair<int, int>> getRect(void);
             void setRect(int x, int size_x, int y, int size_y);
-            const std::pair<State::State, std::vector<onChange>> &getState(void) const;
-            void setState(State::State);
-            virtual void resetState(void);
             virtual std::string serialize(void);
 
         private:
@@ -136,17 +112,9 @@ namespace Component
             std::pair<float, float> pos;
             std::pair<float, float> scale;
             std::pair<std::pair<int, int>, std::pair<int, int>> rect;
-            std::pair<State::State, std::vector<onChange>> state;
     };
     class Audio : public Components {
         public:
-        //enum
-        enum onChange {
-            _none = -1,
-            _path = 0,
-            _audioState = 1,
-            _loop = 2
-        };
         //functions
             Audio(std::string componentName, std::string path, AudioState::AudioState state, bool loop);
             Audio(std::string data);
@@ -157,15 +125,11 @@ namespace Component
             void setAudioState(AudioState::AudioState);
             bool isLoop(void);
             void setLoop(bool state);
-            const std::pair<State::State, std::vector<onChange>> &getState(void) const;
-            void setState(State::State);
-            virtual void resetState(void);
             virtual std::string serialize(void);
         private:
         //settings
             std::string path;
             AudioState::AudioState audioState;
-            std::pair<State::State, std::vector<onChange>> state;
             bool loop;
     };
 }

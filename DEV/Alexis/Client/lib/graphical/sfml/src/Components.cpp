@@ -48,32 +48,9 @@ std::string Component::Audio::serialize(void)
     return parser.stringify();
 }
 
-void Component::Audio::resetState()
-{
-    this->state.first = Component::State::NONE;
-    this->state.second.clear();
-}
-
-void Component::Audio::setState(Component::State::State state)
-{
-    this->state.first = state;
-}
-
-const std::pair<Component::State::State, std::vector<Component::Audio::onChange>>
-&Component::Audio::getState(void) const
-{
-    return this->state;
-}
-
 void Component::Audio::setLoop(bool state)
 {
     this->loop = state;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_loop) == false)
-        this->state.second.push_back(this->_loop);
 }
 
 bool Component::Audio::isLoop(void)
@@ -84,12 +61,6 @@ bool Component::Audio::isLoop(void)
 void Component::Audio::setAudioState(AudioState::AudioState state)
 {
     this->audioState = state;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_audioState) == false)
-        this->state.second.push_back(this->_audioState);
 }
 
 Component::AudioState::AudioState Component::Audio::getAudioState()
@@ -100,12 +71,6 @@ Component::AudioState::AudioState Component::Audio::getAudioState()
 void Component::Audio::setAudioPath(std::string path)
 {
     this->path = path;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_path) == false)
-        this->state.second.push_back(this->_path);
 }
 
 std::string Component::Audio::getAudioPath()
@@ -117,11 +82,9 @@ Component::Audio::Audio(std::string data)
 {
     Parser parser = Parser(data);
     Parser f;
-    std::cout << parser.stringify() << std::endl;
 
     if (parser.isKeyExist("document") == false)
         return;
-    std::cout << parser.getValueOfKey("document") << std::endl;
     if (parser.getValueOfKey("document") != "data")
         return;
     if (parser.getValueOfKey("type") != "AUDIO")
@@ -150,12 +113,11 @@ Component::Audio::Audio(std::string componentName, std::string path, AudioState:
     this->path = path;
     this->audioState = state;
     this->loop = loop;
-    this->state.first = Component::State::ADD;
 }
 
 Component::Audio::~Audio()
 {
-
+    std::cout << "DELETED " << this->componentName << std::endl;
 }
 
 /*-------------------------SPRITE-----------------------*/
@@ -187,35 +149,12 @@ std::string Component::Sprite::serialize(void)
     return parser.stringify();
 }
 
-void Component::Sprite::resetState(void)
-{
-    this->state.first = Component::State::NONE;
-    this->state.second.clear();
-}
-
-void Component::Sprite::setState(Component::State::State state)
-{
-    this->state.first = state;
-}
-
-const std::pair<Component::State::State, std::vector<Component::Sprite::onChange>>
-&Component::Sprite::getState(void) const
-{
-    return this->state;
-}
-
 void Component::Sprite::setRect(int x, int size_x, int y, int size_y)
 {
     this->rect.first.first = x;
     this->rect.first.second = size_x;
     this->rect.second.first = y;
     this->rect.second.second = size_y;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_rect) == false)
-        this->state.second.push_back(this->_rect);
 }
 
 std::pair<std::pair<int, int>, std::pair<int, int>> Component::Sprite::getRect()
@@ -226,12 +165,6 @@ std::pair<std::pair<int, int>, std::pair<int, int>> Component::Sprite::getRect()
 void Component::Sprite::setScale(std::pair<float, float> scale)
 {
     this->scale = scale;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_scale) == false)
-        this->state.second.push_back(this->_scale);
 }
 
 std::pair<float, float> Component::Sprite::getScale()
@@ -242,12 +175,6 @@ std::pair<float, float> Component::Sprite::getScale()
 void Component::Sprite::setPosition(std::pair<float, float> pos)
 {
     this->pos = pos;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_pos) == false)
-        this->state.second.push_back(this->_pos);
 }
 
 std::pair<float, float> Component::Sprite::getPosition()
@@ -258,12 +185,6 @@ std::pair<float, float> Component::Sprite::getPosition()
 void Component::Sprite::setSpritePath(std::string path)
 {
     this->path = path;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_path) == false)
-        this->state.second.push_back(this->_path);
 }
 
 std::string Component::Sprite::getSpritePath(void)
@@ -275,11 +196,9 @@ Component::Sprite::Sprite(std::string data)
 {
     Parser parser = Parser(data);
     Parser f;
-    std::cout << parser.stringify() << std::endl;
 
     if (parser.isKeyExist("document") == false)
         return;
-    std::cout << parser.getValueOfKey("document") << std::endl;
     if (parser.getValueOfKey("document") != "data")
         return;
     if (parser.getValueOfKey("type") != "SPRITE")
@@ -311,12 +230,11 @@ Component::Sprite::Sprite(std::string componentName, std::string path, std::pair
     this->scale = scale;
     this->rect = std::pair<std::pair<int, int>,
     std::pair<int, int>>({-1, -1}, {-1, -1});
-    this->state.first = Component::State::ADD;
 }
 
 Component::Sprite::~Sprite()
 {
-
+    std::cout << "DELETED " << this->componentName << std::endl;
 }
 
 /*-------------------------TEXT-----------------------*/
@@ -349,32 +267,9 @@ std::string Component::Text::serialize(void)
     return parser.stringify();
 }
 
-void Component::Text::resetState(void)
-{
-    this->state.first = Component::State::NONE;
-    this->state.second.clear();
-}
-
-void Component::Text::setState(Component::State::State state)
-{
-    this->state.first = state;
-}
-
-const std::pair<Component::State::State, std::vector<Component::Text::onChange>>
-&Component::Text::getState(void) const
-{
-    return this->state;
-}
-
 void Component::Text::setPosXY(std::pair<float, float> pos)
 {
     this->pos = pos;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_pos) == false)
-        this->state.second.push_back(this->_pos);
 }
 
 std::pair<float, float> Component::Text::getPosXY(void)
@@ -385,12 +280,6 @@ std::pair<float, float> Component::Text::getPosXY(void)
 void Component::Text::setFontSize(int size)
 {
     this->size = size;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_size) == false)
-        this->state.second.push_back(this->_size);
 }
 
 int Component::Text::getFontSize(void)
@@ -401,12 +290,6 @@ int Component::Text::getFontSize(void)
 void Component::Text::setFontPath(std::string path)
 {
     this->fontPath = path;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_fontPath) == false)
-        this->state.second.push_back(this->_fontPath);
 }
 
 std::string Component::Text::getFontPath(void)
@@ -417,12 +300,6 @@ std::string Component::Text::getFontPath(void)
 void Component::Text::setText(std::string str)
 {
     this->str = str;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_str) == false)
-        this->state.second.push_back(this->_str);
 }
 
 std::string Component::Text::getText(void)
@@ -433,12 +310,6 @@ std::string Component::Text::getText(void)
 void Component::Text::setColor(Color::Color color)
 {
     this->color = color;
-
-    std::vector<int> c;
-    for (size_t i = 0; this->state.second.empty() == false
-    && i != this->state.second.size(); c.push_back(this->state.second.at(i)), i += 1);
-    if (isOnChangeExist(&c, this->_color) == false)
-        this->state.second.push_back(this->_color);
 }
 
 Component::Color::Color Component::Text::getColor(void)
@@ -451,11 +322,9 @@ Component::Text::Text(std::string data)
 
     Parser parser = Parser(data);
     Parser f;
-    std::cout << parser.stringify() << std::endl;
 
     if (parser.isKeyExist("document") == false)
         return;
-    std::cout << parser.getValueOfKey("document") << std::endl;
     if (parser.getValueOfKey("document") != "data")
         return;
     if (parser.getValueOfKey("type") != "TEXT")
@@ -493,18 +362,18 @@ int size, Color::Color color, std::pair<float, float> pos)
     this->size = size;
     this->color = color;
     this->pos = pos;
-    this->state.first = Component::State::ADD;
+    //this->state.first = Component::State::ADD;
 }
 
 Component::Text::~Text()
 {
-
+    std::cout << "DELETED " << this->componentName << std::endl;
 }
 
 /*-------------------------Components-----------------------*/
 
 
-Components *findInComponents(std::vector<Components *> components, std::string name)
+std::shared_ptr<Components> findInComponents(std::vector<std::shared_ptr<Components>> components, std::string name)
 {
     for (size_t i = 0; i != components.size(); i += 1) {
         if (components.at(i)->componentName == name)

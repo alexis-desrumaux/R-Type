@@ -7,7 +7,7 @@
 
 #include "../../include/Tools/Tools.hpp"
 
-long  myclock::getElapsedTime_millisec(myclock_t *clock)
+long myclock::getElapsedTime_millisec(std::shared_ptr<myclock_t> clock)
 {
     long seconds, millisec, useconds = 0;
     gettimeofday(&clock->end, NULL);
@@ -17,14 +17,14 @@ long  myclock::getElapsedTime_millisec(myclock_t *clock)
     return millisec;
 }
 
-myclock_t *myclock::createClock()
+std::shared_ptr<myclock_t> myclock::createClock()
 {
-    myclock_t *clock = new myclock_t;
+    std::shared_ptr<myclock_t> clock = std::make_shared<myclock_t>();
     gettimeofday(&clock->start, NULL);
     return clock;
 }
 
-void myclock::resetClock(myclock_t *clock)
+void myclock::resetClock(std::shared_ptr<myclock_t> clock)
 {
     gettimeofday(&clock->start, NULL);
 }

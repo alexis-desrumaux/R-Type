@@ -12,7 +12,7 @@ Object *Objects::getParent()
     return this->parent;
 }
 
-Object *Objects::getObjectByName(std::string name)
+std::shared_ptr<Object> Objects::getObjectByName(std::string name)
 {
     for (size_t i = 0; i != this->objects.size(); i += 1) {
         if (this->objects.at(i)->getName() == name)
@@ -21,12 +21,12 @@ Object *Objects::getObjectByName(std::string name)
     return nullptr;
 }
 
-std::vector<Object *> &Objects::grabObjects()
+std::vector<std::shared_ptr<Object>> &Objects::grabObjects()
 {
     return this->objects;
 }
 
-std::vector<Components *> &Objects::getGraphicalComponents()
+std::vector<std::shared_ptr<Components>> &Objects::getGraphicalComponents()
 {
     this->graphicalComponents.clear();
     for (int i = 0; i != this->objects.size(); i += 1) {
@@ -37,6 +37,10 @@ std::vector<Components *> &Objects::getGraphicalComponents()
     return this->graphicalComponents;
 }
 
+Objects::Objects()
+{
+}
+
 Objects::Objects(Object *parent)
 {
     this->parent = parent;
@@ -44,4 +48,5 @@ Objects::Objects(Object *parent)
 
 Objects::~Objects()
 {
+    std::cout << "DELETED OBJECTS" << std::endl;
 }

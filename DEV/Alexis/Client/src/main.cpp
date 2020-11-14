@@ -9,6 +9,6 @@
 
 int main(int argc, char **argv)
 {
-    Core *core = new Core();
+    std::shared_ptr<Core> core = std::make_shared<Core>();
     core->launch();
 }

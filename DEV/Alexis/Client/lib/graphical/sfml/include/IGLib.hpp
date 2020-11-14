@@ -9,6 +9,7 @@
 #define IGLIB_HPP_
 
 #include <iostream>
+#include <memory>
 #include <fstream>
 #include "Components.hpp"
 #include "Event.hpp"
@@ -18,7 +19,7 @@ class IGLib {
     //functions
         IGLib() = default;
         virtual ~IGLib() = default;
-        virtual eventType_t *display(std::vector<Components *>) = 0;
+        virtual std::shared_ptr<eventType_t> display(std::vector<std::shared_ptr<Components>>) = 0;
         std::string name;
         int state;
     //settings

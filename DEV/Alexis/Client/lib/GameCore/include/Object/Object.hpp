@@ -17,13 +17,13 @@ class Objects;
 class Object {
     public:
         Object(std::string name, Objects *parent);
-        virtual ~Object() = default;
-        std::vector<Components *> &run(eventType_t *event);
-        void setGraphical(std::vector<Components *> components);
-        std::vector<Components *> &getGraphical();
-        Components *findGraphicalComponentByName(std::string);
-        void setBehavior(Behavior *behavior);
-        Behavior *getBehavior();
+        virtual ~Object();
+        std::vector<std::shared_ptr<Components>> &run(std::shared_ptr<eventType_t> event);
+        void setGraphical(std::vector<std::shared_ptr<Components>> components);
+        std::vector<std::shared_ptr<Components>> &getGraphical();
+        std::shared_ptr<Components> findGraphicalComponentByName(std::string);
+        void setBehavior(std::shared_ptr<Behavior> behavior);
+        std::shared_ptr<Behavior> getBehavior();
         const std::string &getName();
         Objects *getParent();
     protected:
@@ -31,8 +31,8 @@ class Object {
     //data
         Objects *parent;
         std::string name;
-        Behavior *behavior;
-        std::vector<Components *> graphical;
+        std::shared_ptr<Behavior> behavior;
+        std::vector<std::shared_ptr<Components>> graphical;
     private:
     //functions
     //data

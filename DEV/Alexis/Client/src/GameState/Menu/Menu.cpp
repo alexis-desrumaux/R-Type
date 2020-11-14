@@ -6,6 +6,8 @@
 */
 
 #include "../../../include/Core/GameState/Menu/Menu.hpp"
+#include <iostream>
+#include <memory>
 
 //------------------------------------Start--------------------------------
 void StartBehavior::startAnimation()
@@ -14,19 +16,18 @@ void StartBehavior::startAnimation()
         return;
     this->startTxtToogle = !this->startTxtToogle;
     this->startTxt->display = this->startTxtToogle;
-    this->startTxt->setState(Component::State::UPDATE);
     myclock::resetClock(this->startTxtClock);
 }
 
-void StartBehavior::run(eventType_t *event)
+void StartBehavior::run(std::shared_ptr<eventType_t> event)
 {
     this->startAnimation();
 }
 
 void StartBehavior::initStart()
 {
-    std::vector<Components *> startComponents;
-    this->startTxt = new Component::Text("menu_startTxt", "START", "./media/Fonts/arcade.ttf", 60, Component::Color::White, std::pair<float, float>(800, 500));
+    std::vector<std::shared_ptr<Components>> startComponents;
+    this->startTxt = std::make_shared<Component::Text>("menu_startTxt", "START", "./media/Fonts/arcade.ttf", 60, Component::Color::White, std::pair<float, float>(800, 500));
     startComponents.push_back(this->startTxt);
     this->parent->setGraphical(startComponents);
 }
@@ -41,17 +42,17 @@ StartBehavior::StartBehavior(Object *parent) : Behavior("StartBehavior", parent)
 
 StartBehavior::~StartBehavior()
 {
-
+    std::cout << "DELETED STARTBEHAVIOR" << std::endl;
 }
 
 Start::Start(std::string name, Objects *parent) : Object(name, parent)
 {
-    this->behavior = new StartBehavior(this);
+    this->behavior = std::make_shared<StartBehavior>(this);
 }
 
 Start::~Start()
 {
-
+    std::cout << "DELETED START" << std::endl;
 }
 
 //------------------------------------Planets--------------------------------
@@ -70,16 +71,15 @@ void PlanetsBehavior::movePlanets()
         planetPos = this->planets.at(i)->getPosition();
         planetPos.first -= 2;
         this->planets.at(i)->setPosition(planetPos);
-        this->planets.at(i)->setState(Component::State::UPDATE);
     }
     if (!this->enableFasterSpeed) {
-        Component::Sprite *lastplanet = this->planets.at(this->planets.size() - 1);
+        std::shared_ptr<Component::Sprite> lastplanet = this->planets.at(this->planets.size() - 1);
         std::pair<float, float> posLastPlanet = lastplanet->getPosition();
         if (posLastPlanet.first < -1180) {
-            Object *background = this->parent->getParent()->getObjectByName("background");
+            std::shared_ptr<Object> background = this->parent->getParent()->getObjectByName("background");
             if (background != NULL) {
                 if (background->getBehavior()->getName() == "BackgroundBehavior") {
-                    BackgroundBehavior *bb = dynamic_cast<BackgroundBehavior *>(background->getBehavior());
+                    std::shared_ptr<BackgroundBehavior> bb = std::dynamic_pointer_cast<BackgroundBehavior>(background->getBehavior());
                     bb->enableFasterSpeed();
                     this->enableFasterSpeed = true;
                 }
@@ -90,32 +90,32 @@ void PlanetsBehavior::movePlanets()
     myclock::resetClock(this->planetsBackgroundClock);
 }
 
-void PlanetsBehavior::run(eventType_t *event)
+void PlanetsBehavior::run(std::shared_ptr<eventType_t> event)
 {
     this->movePlanets();
 }
 
 void PlanetsBehavior::initPlanets()
 {
-    std::vector<Components *> graphical;
-    Component::Sprite *planet = NULL;
+    std::vector<std::shared_ptr<Components>> graphical;
+    std::shared_ptr<Component::Sprite> planet = NULL;
 
-    planet = new Component::Sprite("menu_earth", "./media/Planets/Solar_System/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5));
+    planet = std::make_shared<Component::Sprite>("menu_earth", "./media/Planets/Solar_System/earth.png", std::pair<float, float>(1920, 400), std::pair<float, float>(0.5, 0.5));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_mars", "./media/Planets/Solar_System/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3));
+    planet = std::make_shared<Component::Sprite>("menu_mars", "./media/Planets/Solar_System/mars.png", std::pair<float, float>(4340, 300), std::pair<float, float>(0.3, 0.3));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_jupiter", "./media/Planets/Solar_System/jupiter.png", std::pair<float, float>(6860, -300), std::pair<float, float>(3, 3));
+    planet = std::make_shared<Component::Sprite>("menu_jupiter", "./media/Planets/Solar_System/jupiter.png", std::pair<float, float>(6860, -300), std::pair<float, float>(3, 3));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_saturn", "./media/Planets/Solar_System/saturn.png", std::pair<float, float>(15180, -200), std::pair<float, float>(2, 2));
+    planet = std::make_shared<Component::Sprite>("menu_saturn", "./media/Planets/Solar_System/saturn.png", std::pair<float, float>(15180, -200), std::pair<float, float>(2, 2));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_uranus", "./media/Planets/Solar_System/uranus.png", std::pair<float, float>(20180, 0), std::pair<float, float>(1, 1));
+    planet = std::make_shared<Component::Sprite>("menu_uranus", "./media/Planets/Solar_System/uranus.png", std::pair<float, float>(20180, 0), std::pair<float, float>(1, 1));
     this->planets.push_back(planet);
     graphical.push_back(planet);
-    planet = new Component::Sprite("menu_neptune", "./media/Planets/Solar_System/neptune.png", std::pair<float, float>(23180, 0), std::pair<float, float>(1, 1));
+    planet = std::make_shared<Component::Sprite>("menu_neptune", "./media/Planets/Solar_System/neptune.png", std::pair<float, float>(23180, 0), std::pair<float, float>(1, 1));
     this->planets.push_back(planet);
     graphical.push_back(planet);
     this->parent->setGraphical(graphical);
@@ -131,17 +131,17 @@ PlanetsBehavior::PlanetsBehavior(Object *parent) : Behavior("PlanetsBehavior", p
 
 PlanetsBehavior::~PlanetsBehavior()
 {
-
+    std::cout << "DELETED PLANETSBEHAVIOR" << std::endl;
 }
 
 Planets::Planets(std::string name, Objects *parent) : Object(name, parent)
 {
-    this->behavior = new PlanetsBehavior(this);
+    this->behavior = std::make_shared<PlanetsBehavior>(this);
 }
 
 Planets::~Planets()
 {
-
+    std::cout << "DELETED PLANETS" << std::endl;
 }
 
 //------------------------------------Background--------------------------------
@@ -169,9 +169,6 @@ void BackgroundBehavior::moveBackground_next()
     background1->setPosition(backgroundSpritePos);
     background2->setPosition(backgroundSpritePos2);
     background3->setPosition(backgroundSpritePos2);
-    background1->setState(Component::State::UPDATE);
-    background2->setState(Component::State::UPDATE);
-    background3->setState(Component::State::UPDATE);
 }
 
 void BackgroundBehavior::moveBackground()
@@ -188,18 +185,18 @@ void BackgroundBehavior::moveBackground()
     myclock::resetClock(this->backgroundClock);
 }
 
-void BackgroundBehavior::run(eventType_t *event)
+void BackgroundBehavior::run(std::shared_ptr<eventType_t> event)
 {
     this->moveBackground();
 }
 
 void BackgroundBehavior::initBackground()
 {
-    std::vector<Components *> graphical;
+    std::vector<std::shared_ptr<Components>> graphical;
 
-    this->background1 = new Component::Sprite("menu_background1", "./media/Menu/menu_background1.jpg", std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
-    this->background2 = new Component::Sprite("menu_background2", "./media/Menu/menu_background1.jpg", std::pair<float, float>(1920, 0), std::pair<float, float>(1, 1));
-    this->background3 = new Component::Sprite("menu_background3", "./media/Menu/menu_background1.jpg", std::pair<float, float>(3840, 0), std::pair<float, float>(1, 1));
+    this->background1 = std::make_shared<Component::Sprite>("menu_background1", "./media/Menu/menu_background1.jpg", std::pair<float, float>(0, 0), std::pair<float, float>(1, 1));
+    this->background2 = std::make_shared<Component::Sprite>("menu_background2", "./media/Menu/menu_background1.jpg", std::pair<float, float>(1920, 0), std::pair<float, float>(1, 1));
+    this->background3 = std::make_shared<Component::Sprite>("menu_background3", "./media/Menu/menu_background1.jpg", std::pair<float, float>(3840, 0), std::pair<float, float>(1, 1));
 
     graphical.push_back(this->background1);
     graphical.push_back(this->background2);
@@ -219,52 +216,54 @@ BackgroundBehavior::BackgroundBehavior(Object *parent) : Behavior("BackgroundBeh
 
 BackgroundBehavior::~BackgroundBehavior()
 {
-
+    std::cout << "DELETED BACKGROUNDBEHAVIOR" << std::endl;
 }
 
 Background::Background(std::string name, Objects *parent) : Object(name, parent)
 {
-    this->behavior = new BackgroundBehavior(this);
+    this->behavior = std::make_shared<BackgroundBehavior>(this);
 }
 
 Background::~Background()
 {
-
+    std::cout << "DELETED BACKGROUND" << std::endl;
 }
 
 
 //------------------------------------Menu---------------------------------------
 
-void MenuBehavior::run(eventType_t *event)
+void MenuBehavior::run(std::shared_ptr<eventType_t> event)
 {
     if (event->isMouseBtnPressed == true)
         std::cout << "WOW ! Pressed at x: " << event->mouseButtonPressedCoordinates.x << " and y: " << event->mouseButtonPressedCoordinates.y << std::endl;
 
-    for (size_t i = 0; i != this->objs->grabObjects().size(); i += 1)
+    for (size_t i = 0; i != this->objs->grabObjects().size(); i += 1) {
         this->objs->grabObjects().at(i)->run(event);
+    }
     this->parent->setGraphical(this->objs->getGraphicalComponents());
 }
 
 void MenuBehavior::initShips()
 {
-    Object *redShip = new Object("redShip", this->objs);
-    std::vector<Components *> redShipComponents;
-    redShipComponents.push_back(new Component::Sprite("menu_redShip", "./media/ship.png", std::pair<float, float>(500, 500), std::pair<float, float>(0.7, 0.7)));
+    Objects *objs_ptr = this->objs.get();
+    std::shared_ptr<Object> redShip = std::make_shared<Object>("redShip", objs_ptr);
+    std::vector<std::shared_ptr<Components>> redShipComponents;
+    redShipComponents.push_back(std::make_shared<Component::Sprite>("menu_redShip", "./media/ship.png", std::pair<float, float>(500, 500), std::pair<float, float>(0.7, 0.7)));
     redShip->setGraphical(redShipComponents);
 
-    Object *yellowShip = new Object("yellowShip", this->objs);
-    std::vector<Components *> yellowShipComponents;
-    yellowShipComponents.push_back(new Component::Sprite("menu_yellowShip", "./media/ship2.png", std::pair<float, float>(100, 500), std::pair<float, float>(0.7, 0.7)));
+    std::shared_ptr<Object> yellowShip = std::make_shared<Object>("yellowShip", objs_ptr);
+    std::vector<std::shared_ptr<Components>> yellowShipComponents;
+    yellowShipComponents.push_back(std::make_shared<Component::Sprite>("menu_yellowShip", "./media/ship2.png", std::pair<float, float>(100, 500), std::pair<float, float>(0.7, 0.7)));
     yellowShip->setGraphical(yellowShipComponents);
 
-    Object *greenShip = new Object("greenShip", this->objs);
-    std::vector<Components *> greenShipComponents;
-    greenShipComponents.push_back(new Component::Sprite("menu_greenShip", "./media/ship3.png", std::pair<float, float>(250, 300), std::pair<float, float>(0.7, 0.7)));
+    std::shared_ptr<Object> greenShip = std::make_shared<Object>("greenShip", objs_ptr);
+    std::vector<std::shared_ptr<Components>> greenShipComponents;
+    greenShipComponents.push_back(std::make_shared<Component::Sprite>("menu_greenShip", "./media/ship3.png", std::pair<float, float>(250, 300), std::pair<float, float>(0.7, 0.7)));
     greenShip->setGraphical(greenShipComponents);
 
-    Object *blueShip = new Object("blueShip", this->objs);
-    std::vector<Components *> blueShipComponents;
-    blueShipComponents.push_back(new Component::Sprite("menu_blueShip", "./media/ship4.png", std::pair<float, float>(250, 700), std::pair<float, float>(0.7, 0.7)));
+    std::shared_ptr<Object> blueShip = std::make_shared<Object>("blueShip", objs_ptr);
+    std::vector<std::shared_ptr<Components>> blueShipComponents;
+    blueShipComponents.push_back(std::make_shared<Component::Sprite>("menu_blueShip", "./media/ship4.png", std::pair<float, float>(250, 700), std::pair<float, float>(0.7, 0.7)));
     blueShip->setGraphical(blueShipComponents);
 
     this->objs->grabObjects().push_back(redShip);
@@ -275,20 +274,21 @@ void MenuBehavior::initShips()
 
 void MenuBehavior::initMenu()
 {
-    Object *audio = new Object("audio", this->objs);
-    std::vector<Components *> audioComponents;
-    audioComponents.push_back(new Component::Audio("audio", "./media/main.ogg", Component::AudioState::PLAY, true));
+    Objects *objs_ptr = this->objs.get();
+    std::shared_ptr<Object> audio = std::make_shared<Object>("audio", objs_ptr);
+    std::vector<std::shared_ptr<Components>> audioComponents;
+    audioComponents.push_back(std::make_shared<Component::Audio>("audio", "./media/main.ogg", Component::AudioState::PLAY, true));
     audio->setGraphical(audioComponents);
 
-    Object *background = new Background("background", this->objs);
-    Object *planets = new Planets("planets", this->objs);
+    std::shared_ptr<Object> background = std::make_shared<Background>("background", objs_ptr);
+    std::shared_ptr<Object> planets = std::make_shared<Planets>("planets", objs_ptr);
 
-    Object *title = new Object("title", this->objs);
-    std::vector<Components *> titleComponents;
-    titleComponents.push_back(new Component::Sprite("menu_title1", "./media/Menu/title1.png", std::pair<float, float>(700, 50), std::pair<float, float>(1.3, 1.3)));
+    std::shared_ptr<Object> title = std::make_shared<Object>("title", objs_ptr);
+    std::vector<std::shared_ptr<Components>> titleComponents;
+    titleComponents.push_back(std::make_shared<Component::Sprite>("menu_title1", "./media/Menu/title1.png", std::pair<float, float>(700, 50), std::pair<float, float>(1.3, 1.3)));
     title->setGraphical(titleComponents);
 
-    Object *start = new Start("start", this->objs);
+    std::shared_ptr<Object> start = std::make_shared<Start>("start", objs_ptr);
 
     this->objs->grabObjects().push_back(audio);
     this->objs->grabObjects().push_back(background);
@@ -301,21 +301,21 @@ void MenuBehavior::initMenu()
 MenuBehavior::MenuBehavior(Object *parent) : Behavior("MenuBehavior", parent)
 {
     this->parent->getGraphical().clear();
-    this->objs = new Objects(this->parent);
+    this->objs = std::make_shared<Objects>(this->parent);
     this->initMenu();
 }
 
 MenuBehavior::~MenuBehavior()
 {
-
+    std::cout << "DELETED MENUBEHAVIOR" << std::endl;
 }
 
 Menu::Menu(std::string name, Objects *parent) : Object(name, parent)
 {
-    this->behavior = new MenuBehavior(this);
+    this->behavior = std::make_shared<MenuBehavior>(this);
 }
 
 Menu::~Menu()
 {
-    
+    std::cout << "DELETED MENU" << std::endl;
 }

@@ -9,6 +9,7 @@
 #define CORE_HPP_
 
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <time.h>
 #include <fstream>
@@ -47,10 +48,10 @@ class Core {
         void runMenu();
         void initMenu();
     //data
-        IGLib *gl;
-        void *handle_lib;
-        Objects *gameObjs;
-        eventType_t *event;
+        std::shared_ptr<IGLib> gl;
+        std::shared_ptr<void> handle_lib;
+        std::shared_ptr<Objects> gameObjs;
+        std::shared_ptr<eventType_t> event;
         Game::State state;
         bool GameStateInit;
 };

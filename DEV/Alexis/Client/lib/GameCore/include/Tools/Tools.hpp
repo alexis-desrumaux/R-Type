@@ -10,6 +10,7 @@
 
 #include <sys/time.h>
 #include <iostream>
+#include <memory>
 
 struct myclock_t
 {
@@ -19,9 +20,9 @@ struct myclock_t
 
 namespace myclock
 {
-    myclock_t *createClock();
-    void resetClock(myclock_t *);
-    long getElapsedTime_millisec(myclock_t *clock);
+    std::shared_ptr<myclock_t> createClock();
+    void resetClock(std::shared_ptr<myclock_t>);
+    long getElapsedTime_millisec(std::shared_ptr<myclock_t> clock);
 }
 
 #endif /* !TOOLS_HPP_ */

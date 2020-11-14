@@ -127,7 +127,7 @@ int SFML::SFML::draw(void)
     return 0;
 }
 
-int SFML::SFML::manageUpdate(std::vector<Components *> update)
+int SFML::SFML::manageUpdate(std::vector<std::shared_ptr<Components>> update)
 {
     for (size_t i = 0; i != update.size(); i += 1) {
         if (findInLComponents(this->lComponents, update.at(i)->componentName) != NULL) {
@@ -136,27 +136,27 @@ int SFML::SFML::manageUpdate(std::vector<Components *> update)
             {
             case listComponent::TEXT:
             {
-                Component::Text *text = dynamic_cast<Component::Text *>(update.at(i));
-                if (text->getState().first == Component::State::UPDATE) {
-                   LComponent::Text *c = dynamic_cast<LComponent::Text *>(findInLComponents(this->lComponents, text->componentName));
-                   c->update(text);
+                if (update.at(i)->serialize() != findInLComponents(this->lComponents, update.at(i)->componentName)->serializedComponent) {
+                    std::shared_ptr<Component::Text> text = std::dynamic_pointer_cast<Component::Text>(update.at(i));
+                    std::shared_ptr<LComponent::Text> c = std::dynamic_pointer_cast<LComponent::Text>(findInLComponents(this->lComponents, text->componentName));
+                    c->update(text);
                 }
                 break;
             }
             case listComponent::SPRITE:
             {
-                Component::Sprite *sprite = dynamic_cast<Component::Sprite *>(update.at(i));
-                if (sprite->getState().first == Component::State::UPDATE) {
-                   LComponent::Sprite *c = dynamic_cast<LComponent::Sprite *>(findInLComponents(this->lComponents, sprite->componentName));
-                   c->update(sprite);
+                if (update.at(i)->serialize() != findInLComponents(this->lComponents, update.at(i)->componentName)->serializedComponent) {
+                    std::shared_ptr<Component::Sprite> sprite = std::dynamic_pointer_cast<Component::Sprite >(update.at(i));
+                    std::shared_ptr<LComponent::Sprite> c = std::dynamic_pointer_cast<LComponent::Sprite>(findInLComponents(this->lComponents, sprite->componentName));
+                    c->update(sprite);
                 }
                 break;
             }
             case listComponent::AUDIO:
             {
-                Component::Audio *audio = dynamic_cast<Component::Audio *>(update.at(i));
-                if (audio->getState().first == Component::State::UPDATE) {
-                    LComponent::Audio *c = dynamic_cast<LComponent::Audio *>(findInLComponents(this->lComponents, audio->componentName));
+                if (update.at(i)->serialize() != findInLComponents(this->lComponents, update.at(i)->componentName)->serializedComponent) {
+                    std::shared_ptr<Component::Audio> audio = std::dynamic_pointer_cast<Component::Audio>(update.at(i));
+                    std::shared_ptr<LComponent::Audio> c = std::dynamic_pointer_cast<LComponent::Audio>(findInLComponents(this->lComponents, audio->componentName));
                     c->update(audio);
                 }
                 break;
@@ -169,7 +169,7 @@ int SFML::SFML::manageUpdate(std::vector<Components *> update)
     return 0;
 }
 
-size_t findLComponents_index(std::vector<SFML::LComponents *>&lcomponent, std::string name)
+size_t findLComponents_index(std::vector<std::shared_ptr<SFML::LComponents>>&lcomponent, std::string name)
 {
     for (size_t i = 0; !lcomponent.empty() && i != lcomponent.size(); i += 1) {
         if (lcomponent.at(i)->componentName == name)
@@ -178,7 +178,7 @@ size_t findLComponents_index(std::vector<SFML::LComponents *>&lcomponent, std::s
     return -1;
 }
 
-size_t findComponents_index(std::vector<Components *> &components, std::string name)
+size_t findComponents_index(std::vector<std::shared_ptr<Components>> &components, std::string name)
 {
     for (size_t i = 0; !components.empty() && i != components.size(); i += 1) {
         if (components.at(i)->componentName == name)
@@ -187,30 +187,21 @@ size_t findComponents_index(std::vector<Components *> &components, std::string n
     return -1;
 }
 
-void resetStateComponents(std::vector<Components *> components)
-{
-    if (components.empty() != true) {
-        for (size_t i = 0; i != components.size(); i += 1) {
-            components.at(i)->resetState();
-        }
-    }
-}
-
-SFML::LComponents *createNewLComponent(Components *AComponent)
+std::shared_ptr<SFML::LComponents> createNewLComponent(std::shared_ptr<Components> AComponent)
 {
     listComponent::listComponent type = AComponent->type;
-    SFML::LComponents *newLComponent = nullptr;
+    std::shared_ptr<SFML::LComponents> newLComponent = nullptr;
 
     switch (type)
     {
         case listComponent::listComponent::SPRITE:
-            newLComponent = new SFML::LComponent::Sprite(dynamic_cast<Component::Sprite *>(AComponent));
+            newLComponent = std::make_shared<SFML::LComponent::Sprite>(std::dynamic_pointer_cast<Component::Sprite>(AComponent));
             break;
         case listComponent::listComponent::TEXT:
-            newLComponent = new SFML::LComponent::Text(dynamic_cast<Component::Text *>(AComponent));
+            newLComponent = std::make_shared<SFML::LComponent::Text>(std::dynamic_pointer_cast<Component::Text>(AComponent));
             break;
         case listComponent::listComponent::AUDIO:
-            newLComponent = new SFML::LComponent::Audio(dynamic_cast<Component::Audio *>(AComponent));
+            newLComponent = std::make_shared<SFML::LComponent::Audio>(std::dynamic_pointer_cast<Component::Audio>(AComponent));
             break;
         default:
             break;
@@ -218,16 +209,18 @@ SFML::LComponents *createNewLComponent(Components *AComponent)
     return newLComponent;
 }
 
-void debug_dispNameLComponents(std::vector<SFML::LComponents *> &lcomponents)
+void debug_dispNameLComponents(std::vector<std::shared_ptr<SFML::LComponents>> &lcomponents)
 {
     for (size_t i = 0; i != lcomponents.size(); i += 1) {
         std::cout << lcomponents.at(i)->componentName << std::endl;
+        std::cout << "---------------------------" << std::endl;
+        std::cout << lcomponents.at(i)->serializedComponent << std::endl;
     }
 }
 
-void SFML::SFML::checkForMovedComponents(std::vector<Components *>& components)
+void SFML::SFML::checkForMovedComponents(std::vector<std::shared_ptr<Components>>& components)
 {
-    std::vector<LComponents *>newLcomponents;
+    std::vector<std::shared_ptr<LComponents>>newLcomponents;
     std::vector<size_t> positions;
     size_t indexOfLComponent = 0;
     bool moved = false;
@@ -249,7 +242,7 @@ void SFML::SFML::checkForMovedComponents(std::vector<Components *>& components)
     }
 }
 
-void SFML::SFML::checkForDeletedComponents(std::vector<Components *>& components)
+void SFML::SFML::checkForDeletedComponents(std::vector<std::shared_ptr<Components>>& components)
 {
     size_t indexOfComponent = 0;
 
@@ -261,7 +254,7 @@ void SFML::SFML::checkForDeletedComponents(std::vector<Components *>& components
     }
 }
 
-void SFML::SFML::checkForNewComponents(std::vector<Components *> &components)
+void SFML::SFML::checkForNewComponents(std::vector<std::shared_ptr<Components>> &components)
 {
     size_t indexOfLComponent = 0;
 
@@ -269,13 +262,11 @@ void SFML::SFML::checkForNewComponents(std::vector<Components *> &components)
         indexOfLComponent = findLComponents_index(this->lComponents, components.at(i)->componentName);
         if (indexOfLComponent == (size_t)-1) {
             this->lComponents.insert(this->lComponents.begin() + i, createNewLComponent(components.at(i)));
-            debug_dispNameLComponents(this->lComponents);
-            std::cout << "---------------------------" << std::endl;
         }
     }
 }
 
-void resetEventStruct(eventType_t *eventStruct)
+void resetEventStruct(std::shared_ptr<eventType_t> eventStruct)
 {
     eventStruct->isClosed = false;
     eventStruct->isKeyPressed = false;
@@ -291,7 +282,7 @@ void resetEventStruct(eventType_t *eventStruct)
     eventStruct->mouseCoordinates.y = 0;
 }
 
-void fillEventStruct(eventType_t *eventStruct, sf::Event event, sf::RenderWindow *window)
+void fillEventStruct(std::shared_ptr<eventType_t> eventStruct, sf::Event event, std::shared_ptr<sf::RenderWindow> window)
 {
     switch (event.type)
     {
@@ -300,9 +291,6 @@ void fillEventStruct(eventType_t *eventStruct, sf::Event event, sf::RenderWindow
             break;
         case sf::Event::MouseButtonPressed:
             eventStruct->isMouseBtnPressed = true;
-
-
-
             std::cout << "window size width: " << window->getSize().x << " height: " << window->getSize().y << std::endl;
 
             eventStruct->mouseButtonPressedCoordinates.x = (event.mouseButton.x * 1920) / window->getSize().x;
@@ -334,7 +322,7 @@ void fillEventStruct(eventType_t *eventStruct, sf::Event event, sf::RenderWindow
     }
 }
 
-eventType_t *SFML::SFML::display(std::vector<Components *> components)
+std::shared_ptr<eventType_t> SFML::SFML::display(std::vector<std::shared_ptr<Components>> components)
 {
     sf::Event event;
     std::string keyPressed = "";
@@ -355,7 +343,6 @@ eventType_t *SFML::SFML::display(std::vector<Components *> components)
     manageUpdate(components);
     draw();
     this->window->display();
-    resetStateComponents(components);
     return this->eventStruct;
 }
 
@@ -376,20 +363,17 @@ void deleteUnusedLComponents(std::vector<SFML::LComponents *>&lComponents, std::
 
 SFML::SFML::SFML()
 {
-    this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "R-Type");
+    this->window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-Type");
     this->name = "";
     this->type = "SFML";
-    this->eventStruct = new eventType_t;
+    this->eventStruct = std::make_shared<eventType_t>();
     resetEventStruct(this->eventStruct);
     this->window->setFramerateLimit(60);
 }
 
 SFML::SFML::~SFML()
 {
-    for (size_t i = 0; i != this->lComponents.size(); i++) {
-        this->lComponents.at(i)->~LComponents();
-    }
-    delete this->window;
+    std::cout << "DELETED SFML" << std::endl;
 }
 
 extern "C"
